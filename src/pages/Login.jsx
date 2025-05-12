@@ -23,8 +23,9 @@ const Login = () => {
     const accounts = instance.getAllAccounts();
     for (const account of accounts) {
       await instance.logoutPopup({
-        postLogoutRedirectUri: "http://localhost:3000/",
+        // postLogoutRedirectUri: "http://localhost:3000/",
         // postLogoutRedirectUri: "http://192.168.2.8:667/",
+        postLogoutRedirectUri: "https://load-sheet-xi.vercel.app/",
         account,
       });
     }
@@ -64,8 +65,9 @@ const Login = () => {
       // 4. Logout again to ensure cache is cleared
       const account = response.account;
       await instance.logoutPopup({
-        postLogoutRedirectUri: "http://localhost:3000/",
+        // postLogoutRedirectUri: "http://localhost:3000/",
         // postLogoutRedirectUri: "http://192.168.2.8:667/",
+        postLogoutRedirectUri: "https://load-sheet-xi.vercel.app/",
         account,
       });
     }
