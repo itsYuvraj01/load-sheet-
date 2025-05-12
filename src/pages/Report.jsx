@@ -12,6 +12,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Environment from "../Environment";
 import axios from "axios";
+import Spinner from "../component/Spinner";
 
 const Report = () => {
   // console.log("environmernt",Environment)
@@ -27,9 +28,11 @@ const Report = () => {
   const [flightData, setFlightData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filterData,setFilterData] = useState([]);
+  const [loading,setLoading] = useState(false);
   // api to get station drop down data
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       try {
         const response = await axios.post(
           `${Environment.BaseAPIURL}/GetPrintLoadSheetDt`,
@@ -41,8 +44,10 @@ const Report = () => {
         const arrayData = Array.isArray(response?.data) ? response?.data : [];
         setStationData(arrayData);
         // console.log("sta", stationData);
+        setLoading(false)
       } catch (error) {
         console.log("error in fetching stations", error);
+        setLoading(false)
       }
     };
     fetchData();
@@ -50,6 +55,7 @@ const Report = () => {
   // api to get flight data
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       try {
         const response = await axios.post(
           `${Environment.BaseAPIURL}/GetPrintLoadSheetDt`,
@@ -62,8 +68,10 @@ const Report = () => {
         // console.log("flight", response?.data);
         const flight = Array.isArray(response?.data) ? response?.data : [];
         setFlightData(flight);
+         setLoading(false);
       } catch (error) {
         console.log("error in fetching flights", error);
+         setLoading(false);
       }
     };
     fetchData();
@@ -90,6 +98,7 @@ const Report = () => {
   const fetchData = async (date = '', station = '', flight = '') => {
     const currentDate = date || formatDate(new Date());
     setDateData(currentDate);
+    setLoading(true);
     try {
       const response = await axios.post(`${Environment.BaseAPIURL}/GetPrintLoadSheetDt`, {
         "Action": 'GetReport',
@@ -101,8 +110,10 @@ const Report = () => {
       const tablereport = Array.isArray(response?.data) ? response?.data : []
       setTableData(tablereport);
       setFilterData(tablereport);
+      setLoading(false);
     } catch (error) {
       console.log('error in fetching report table data', error);
+       setLoading(false)
     }
   };
 
@@ -177,6 +188,8 @@ const Report = () => {
   };
 
   return (
+    <>
+    {loading && <Spinner/>}
     <div>
       <Navbar />
       <div className="report-top-container">
@@ -293,6 +306,7 @@ const Report = () => {
       </div>
       <Footer />
     </div>
+    </>
   );
 };
 

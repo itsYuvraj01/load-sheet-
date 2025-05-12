@@ -62,9 +62,9 @@
 }
 
 .datepick {
-    font-weight: 600;
-    font-size: 18px;
-    color: #787878;
+    font-weight: 500;
+    font-size: 16px;
+    color: black;
     outline: none;
     height: 45px;
     border-radius: 6px;
@@ -135,6 +135,7 @@
     font-weight: bold;
     transition: all 0.3s ease;
     border: none;
+    margin-top: 1.4rem;
   }
 
   .report-submit-button:hover{

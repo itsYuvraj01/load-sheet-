@@ -14,6 +14,7 @@ import axios from "axios";
 import Environment from "../Environment";
 import { ToastContainer, toast ,Bounce} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Spinner from "../component/Spinner";
 
 const AddUser = () => {
   const [name, setName] = useState("");
@@ -28,9 +29,11 @@ const AddUser = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [userData1, setUserData1] = useState([]);
   const [emailError, setEmailError] = useState("");
+  const [loading,setLoading] = useState(false);
 
   useEffect(()=>{
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.post(`${Environment.BaseAPIURL}/GetAddUserReport`,{
           "action": "GetReportUser"
@@ -40,8 +43,10 @@ const AddUser = () => {
         setTableData(userData)
         setFilterData(userData)
         setUserData1(userData);
+        setLoading(false);
       } catch (error) {
-        console.log("error in fetching data",error)
+        console.log("error in fetching data",error);
+        setLoading(false);
       }
     }
     fetchData();
@@ -50,6 +55,7 @@ const AddUser = () => {
   
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.post(
           `${Environment.BaseAPIURL}/GetDestDropdownbind`,
@@ -62,8 +68,10 @@ const AddUser = () => {
           ? response?.data
           : [];
         setStationData(arrayData);
+        setLoading(false);
       } catch (error) {
         console.log("error in fetching stations", error);
+        setLoading(false);
       }
     };
     fetchData();
@@ -101,7 +109,7 @@ const AddUser = () => {
       setEmptyFields(prev => ({...prev,email:false}));
     }
     if(e.target.value !== '' && checkDuplicateEmail(e.target.value)){
-      setEmailError('Email Already Exists')
+      setEmailError('*Email Already Exists')
     }
   };
   const handleMobileChange = (e) => {
@@ -191,7 +199,7 @@ const AddUser = () => {
     {
       return;
     }
-
+    setLoading(true);
     try {
       const response = await axios.post(`${Environment.BaseAPIURL}/SaveUserandUpdate`,{
       "action": editingIndex !== null ? "UpdateUser":"InsertUser",
@@ -227,7 +235,7 @@ const AddUser = () => {
     } catch (error) {
       console.log("error in adding updating the user",error);
     }
-
+    setLoading(false)
     console.log("submitted data", payload);
     handleReset();
   };
@@ -258,6 +266,8 @@ const AddUser = () => {
   }
 
   return (
+<>
+{loading && <Spinner/>}
     <div className="main-container-user">
       <Navbar />
       <div className="User-container">
@@ -301,7 +311,7 @@ const AddUser = () => {
                   onChange={handleStationChange}
                   className={`user-input ${emptyFields.station ? 'error-border' : ''}`}
                 >
-                  <option value="">Select Stations</option>
+                  <option value="" disabled>Select Station</option>
                   {stationData.map((station, index) => (
                     <option key={index} value={station.destination}>
                       {station.destination}
@@ -330,17 +340,6 @@ const AddUser = () => {
               </div>
             </div>
             <div className="user-form-lower-part">
-              {/* <Switch
-                checked={status === "Active"}
-                onChange={() =>
-                  setStatus(status === "Active" ? "Inactive" : "Active")
-                }
-              />
-              <button className="user-reset" >Reset</button>
-              <button className="user-add" type="submit">
-                Add
-              </button> */}
-              {/* {editingIndex !== null && ( */}
                         {/* // Switch toggle button */}
                         <Switch
                 checked={status === 1}
@@ -379,8 +378,8 @@ const AddUser = () => {
                                </div> */}
           </div>
         </div>
-        <div className="table-scroll-vertical">
-          <table>
+        <div className="table-scroll-verticall">
+          <table className="table">
             <thead>
               <tr>
                 <th>Sr. no</th>
@@ -425,6 +424,7 @@ theme="light"
 transition={Bounce}
 />
     </div>
+    </>
   );
 };
 
