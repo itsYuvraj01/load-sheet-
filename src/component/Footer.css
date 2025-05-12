@@ -1,0 +1,52 @@
+.footer{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+    background: #ff7800;
+    color: white;
+    text-align: left;
+    margin-top: 2px;
+    padding: 5px;
+}
+
+.Card-container{
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1rem;
+    gap: 1rem;
+    border-radius: 10px;
+    box-shadow: 8px 8px 8px grey;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.Card-container:hover{
+    scale: 1.02;
+}
+
+.card-heading {
+    font-weight: bold;
+    font-size: 2rem;
+    color: white;
+    /* text-align: center; */
+}
+
+.icon-parent{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.icons{
+    font-size: 2.5rem;
+    /* border: 1px solid white; */
+    padding: 0.5rem;
+    /* border-radius: 50%; */
+}
+
+.card-count{
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+}

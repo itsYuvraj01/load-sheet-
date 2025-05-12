@@ -1,0 +1,134 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 77px;
+    background-color: #FF7700;
+    /* background-color: #ff7800; */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .main-navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 2rem;
+  }
+  
+  .image-container {
+    height: 70%;
+    width: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 6px;
+    padding: 0.3rem;
+  }
+  
+  .logo {
+    height: auto;
+    width: 100%;
+    object-fit: contain;
+  }
+  
+  .nav-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .pages-link {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .page-link {
+    background-color: aliceblue;
+    transform: skew(-15deg);
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+  }
+  
+  .page-link span {
+    display: inline-block;
+    transform: skew(15deg); /* counteracts the parent's skew */
+    color: orange;
+    font-weight: 500;
+  }
+
+  .page-link-2 {
+    background-color: aliceblue;
+    transform: skew(-15deg);
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .page-link-2 span {
+    display: inline-block;
+    transform: skew(15deg); /* counteracts the parent's skew */
+    color: orange;
+    font-weight: 500;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 110%; /* space below Reports */
+    right: -65px;
+    transform: skew(15deg); /* counter the parent's skew */
+    min-width: 180px;
+    /* background-color: orange; */
+    background-color: #f77b07;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    z-index: 999;
+  }
+  
+  .dropdown-item {
+    padding: 0.6rem 1rem;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .dropdown-item:hover {
+    /* background-color: #f77b07; */
+    background-color: orange;
+  }
+  
+  
+  /* Responsive for small screens */
+  @media screen and (max-width: 768px) {
+    .nav-heading {
+      font-size: 1.5rem;
+    }
+  
+    .pages-link {
+      gap: 1rem;
+      padding-right: 0;
+    }
+  
+    .image-container {
+      width: 100px;
+      padding: 0.2rem;
+    }
+  }
+  

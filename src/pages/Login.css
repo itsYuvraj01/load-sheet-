@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
+
+.login-container {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 2rem;
+    box-sizing: border-box;
+    background-color: #FF7700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  @keyframes slideRightToLeft {
+    0% {
+      left: 100%;
+    }
+    100% {
+      left: -30%;
+    }
+  }
+  
+  .animated-text {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    white-space: nowrap;
+    color: white;
+    font-family: "Roboto Slab", serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    animation: slideRightToLeft 10s linear infinite;
+    animation-delay: 0s; 
+  }
+  
+  
+  .login-box {
+    display: flex;
+    width: 80%;
+    max-width: 1000px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); */
+    box-shadow: 10px 10px 10px rgb(80, 51, 7);
+  }
+  
+  .login-right {
+    width: 50%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .login-left{
+    width: 50%;
+    /* padding: 1rem; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border: none;
+    border-radius: 10px 0 0 10px;
+    overflow: hidden;
+  }
+  
+  .login-logo {
+    max-width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .login-logo-image{
+    /* height: 80px; */
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* background: rgb(7, 76, 224); */
+  }
+  
+  .login-right h2 {
+    /* margin-bottom: 1rem; */
+    color: #333;
+    font-family: "Roboto Slab", serif;
+    font-weight: 800;
+    /* font-family: 'Inter', sans-serif; */
+        font-family: "Roboto Slab", serif;
+}
+  
+  .login-right p {
+    /* margin-bottom: 2rem; */
+    text-align: center;
+    color: #666;
+     font-family: "Roboto Slab", serif;
+  }
+  
+  .login-button {
+    padding: 12px 24px;
+    background-color: #01121f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 70%;
+    font-family: "Roboto Slab", serif;
+  }
+  
+  .login-button:hover {
+    background-color: #005ea2;
+  }
+  
+  @media (max-width: 768px) {
+    .login-box {
+      flex-direction: column;
+    }
+  
+    .login-left,
+    .login-right {
+      width: 100%;
+      padding: 2rem;
+    }
+  }
+  
