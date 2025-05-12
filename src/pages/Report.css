@@ -194,8 +194,12 @@
     border-radius: 8px;
     position: relative;
     cursor: pointer;
-    padding-right: 3rem;
+    padding-right: 1.2rem;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
   .download-excel:hover {

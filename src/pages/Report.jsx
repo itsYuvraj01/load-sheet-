@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./Report.css";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
-import { RiFileExcel2Line } from "react-icons/ri";
+// import { RiFileExcel2Line } from "react-icons/ri";
 import Navbar from "../component/Navbar";
 import Footer from "../component/Footer";
 import data from "../Data/Data";
@@ -264,7 +264,10 @@ const Report = () => {
               />
             </div>
             <div className="download-excel" onClick={exportToExcel}>
-              <RiFileExcel2Line className="excel-icon" /> Export As
+              {/* <RiFileExcel2Line className="excel-icon" />  */}
+              Export As
+              <div style={{height:"25px",width:"25px"}}><img src="/images/excel.png" alt="" style={{height:"100%",width:"100%"}}/></div>
+              
             </div>
           </div>
         </div>
@@ -311,83 +314,3 @@ const Report = () => {
 };
 
 export default Report;
-
-//
-// GetAllFlightNos
-
-// const handleSearchChange = (e) => {
-//     const searchTerm = e.target.value;
-//     setSearchTerm(searchTerm);
-//     filterFirstTableData(searchTerm); // Only filters first table data
-//   };
-
-//   const filterFirstTableData = (searchTerm) => {
-//     const filtered = originalFirstTableData.filter((passenger) =>
-//       Object.values(passenger).some(
-//         (value) =>
-//           typeof value === "string" &&
-//           value.toLowerCase().includes(searchTerm.toLowerCase())
-//       )
-//     );
-//     setFilteredData(filtered);
-//     setCurrentPage(0);
-//     setDisplayedData(filtered.slice(0, pageSize));
-//   };
-
-// const exportToExcel2 = () => {
-//     const reversedData = selectedFD.slice();
-//     // .reverse();
-
-//     const dataToExportForTable2 = reversedData.map((data, index) => ({
-//       "Sl. No.": index + 1,
-//       "Feedback Date-time": data.FeedbackDateTime,
-//       "CISF-Name": data.CISFName,
-//       "CISF-ID": data.CISFID,
-//       "CISF Feedback Category": data.FeedbackCategory,
-//       "Feedback Remark": data.Remarks,
-//       "User ID": data.UserId,
-//       "Tablet Id": data.TabletID,
-//       "CheckPoint Location Name": data.CheckpointName,
-//     }));
-
-//     const worksheet = XLSX.utils.json_to_sheet(dataToExportForTable2);
-//     const workbook = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-//     const excelBuffer = XLSX.write(workbook, {
-//       bookType: "xlsx",
-//       type: "array",
-//     });
-
-//     const blob = new Blob([excelBuffer], {
-//       type: "application/vnd.openxmlformats-officedocument.spreadsheet.sheet;charset=UTF-8",
-//     });
-
-//     // Get CISF Name from the first entry
-//     const reportName =
-//       reversedData.length > 0 ? reversedData[0].CISFName : "CISF";
-
-//     // Use dynamic name
-//     saveAs(blob, `${reportName} Detailed Feedback Report.xlsx`);
-//   };
-
-/* <Dropdown.Item onClick={exportToExcel2}>
-<FaFileExcel style={{ color: "green" }} />{" "}
-Excel
-</Dropdown.Item> */
-
-// const addTime = (date, hours, minutes, seconds) => {
-//     const newDate = new Date(date);
-//     newDate.setHours(newDate.getHours() + hours);
-//     newDate.setMinutes(newDate.getMinutes() + minutes);
-//     newDate.setSeconds(newDate.getSeconds() + seconds);
-
-//     const year = newDate.getFullYear();
-//     const month = String(newDate.getMonth() + 1).padStart(2, "0");
-//     const day = String(newDate.getDate()).padStart(2, "0");
-//     const hoursStr = String(newDate.getHours()).padStart(2, "0");
-//     const minutesStr = String(newDate.getMinutes()).padStart(2, "0");
-//     const secondsStr = String(newDate.getSeconds()).padStart(2, "0");
-
-//     return `${day}-${month}-${year} ${hoursStr}:${minutesStr}:${secondsStr}`;
-//   };
