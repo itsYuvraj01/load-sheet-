@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 import { useNavigate } from 'react-router-dom';
 import { useMsal } from "@azure/msal-react";
-
+import { googleLogout } from '@react-oauth/google';
 
 const Navbar = () => {
   const [openReport, setOpenReport] = useState(false);
@@ -42,15 +42,40 @@ const Navbar = () => {
   //   });
   //   // navigate("/")
   // }
-  const handleLogOut = () => {
-  instance.logoutPopup({
-    postLogoutRedirectUri: "/", // This can be any route you want to redirect to
-  }).then(() => {
-    navigate("/");
-  }).catch((error) => {
+//   const handleLogOut = () => {
+//   instance.logoutPopup({
+//     postLogoutRedirectUri: "/", // This can be any route you want to redirect to
+//   }).then(() => {
+//     navigate("/");
+//   }).catch((error) => {
+//     console.error("Logout failed:", error);
+//   });
+// };
+
+const handleLogOut = async () => {
+  const loginType = localStorage.getItem("loginType");
+
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+
+    if (loginType === "google") {
+      console.log(googleLogout(), 64)
+      // googleLogout();
+      window.open("https://accounts.google.com/Logout", "_self");
+      navigate("/");
+    } else if (loginType === "microsoft") {
+      await instance.logoutPopup({ postLogoutRedirectUri: "/" });
+      navigate("/");
+    } else {
+      // fallback: unknown login type
+      navigate("/");
+    }
+  } catch (error) {
     console.error("Logout failed:", error);
-  });
+  }
 };
+
 
   return (
     <div className="navbar">
@@ -80,7 +105,7 @@ const Navbar = () => {
             {openReport && (
               <div className="dropdown-menu">
                 <div className="dropdown-item" onClick={() => navigate("/LoadSheetReport")}>
-                  LoadSheet Details
+                  Load Sheet Details
                 </div>
               </div>
             )}

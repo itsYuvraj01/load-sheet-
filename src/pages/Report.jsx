@@ -157,35 +157,80 @@ const Report = () => {
     setTableData(filtered);
   };
 
+  // const exportToExcel = () => {
+  //   const excelData = tableData.slice();
+  //   const excel = excelData.map((item, index) => ({
+  //     "Sr. no.": index + 1,
+  //     "Date": dateData,
+  //     "Flight No": item.flightNo,
+  //     "Sector": item.destination,
+  //     "LoadSheet Name": item.loadsheetname,
+  //     "LoadSheet Recieve Date/Time": item.loadsheetrecievedDatetime,
+  //     "LoadSheet Print Date/Time": item.printDateTime,
+  //     "Printer Mac Address/ID": item.printMacAddress,
+  //     "UserId": item.userId,
+  //     // "Prints count": item["No-of-Prints"],
+  //   }));
+  //   const worksheet = XLSX.utils.json_to_sheet(excel);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+  //   const excelBuffer = XLSX.write(workbook, {
+  //     bookType: "xlsx",
+  //     type: "array",
+  //   });
+
+  //   const blob = new Blob([excelBuffer], {
+  //     type: "application/vnd.openxmlformats-officedocument.spreadsheet.sheet;charset=UTF-8",
+  //   });
+  //   // Use dynamic name
+  //   saveAs(blob, "Load Sheet Report.xlsx");
+  // };
+
   const exportToExcel = () => {
-    const excelData = tableData.slice();
-    const excel = excelData.map((item, index) => ({
-      "Sr. no.": index + 1,
-      "Date": dateData,
-      "Flight No": item.flightNo,
-      "Sector": item.destination,
-      "LoadSheet Name": item.loadsheetname,
-      "LoadSheet Recieve Date/Time": item.loadsheetrecievedDatetime,
-      "LoadSheet Print Date/Time": item.printDateTime,
-      "Printer Mac Address/ID": item.printMacAddress,
-      "UserId": item.userId,
-      // "Prints count": item["No-of-Prints"],
-    }));
-    const worksheet = XLSX.utils.json_to_sheet(excel);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  const excelData = tableData.slice();
+  const excel = excelData.map((item, index) => ({
+    "Sr. no.": index + 1,
+    "Date": dateData,
+    "Flight No": item.flightNo,
+    "Sector": item.destination,
+    "LoadSheet Name": item.loadsheetname,
+    "LoadSheet Recieve Date/Time": item.loadsheetrecievedDatetime,
+    "LoadSheet Print Date/Time": item.printDateTime,
+    "Printer Mac Address/ID": item.printMacAddress,
+    "UserId": item.userId,
+    // "Prints count": item["No-of-Prints"],
+  }));
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
+  // Convert JSON to sheet
+  const worksheet = XLSX.utils.json_to_sheet(excel, { origin: "A2" }); // Start at A2 to leave space for header
 
-    const blob = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheet.sheet;charset=UTF-8",
-    });
-    // Use dynamic name
-    saveAs(blob, "Load Sheet Report.xlsx");
-  };
+  // Add custom title row
+  XLSX.utils.sheet_add_aoa(worksheet, [["Load Sheet Details"]], { origin: "A1" });
+
+  // Merge cells for main header across all columns (A1 to I1)
+  worksheet["!merges"] = [
+    {
+      s: { r: 0, c: 0 }, // start cell (row 0, column 0 => A1)
+      e: { r: 0, c: 8 }, // end cell (row 0, column 8 => I1)
+    },
+  ];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheet.sheet;charset=UTF-8",
+  });
+
+  saveAs(blob, "Load Sheet Report.xlsx");
+};
+
 
   return (
     <>
@@ -258,7 +303,7 @@ const Report = () => {
               </span>
               <input
                 type="text"
-                placeholder="Search your result here"
+                placeholder="Search"
                 onChange={handleSearch}
                 className="report-search-input"
               />

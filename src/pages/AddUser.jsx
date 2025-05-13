@@ -268,7 +268,7 @@ const AddUser = () => {
   return (
 <>
 {loading && <Spinner/>}
-    <div className="main-container-user">
+    <div className="main-container-user" >
       <Navbar />
       <div className="User-container">
         <div className="user-uper">
@@ -297,7 +297,7 @@ const AddUser = () => {
                   onChange={handleEmailChange}
                   placeholder="Enter Email"
                   className={`user-input ${emptyFields.email ? 'error-border' : ''}`}
-                  disabled = {editingIndex !== null}
+                  // disabled = {editingIndex !== null}
                 />
                 {emptyFields.email && <div className="error-message">*Email is required</div>}
                 {emailError && <p className="error-message">{emailError}</p>}
