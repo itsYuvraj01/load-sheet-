@@ -7,6 +7,7 @@ import Environment from "../Environment";
 import { useState } from "react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const { instance } = useMsal();
@@ -14,25 +15,64 @@ const Login = () => {
   const [user, setUser] = useState("");
   const [stationCode, setStationCode] = useState("");
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const accessToken = tokenResponse.access_token;
+
+        // Fetch Google user info using access token
+        const { data } = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        console.log("Google login success:", data);
+
+        const email = data.email;
+
+        const response = await axios.post(
+          `${Environment.BaseAPIURL}/CheckLoginByFlightCode`,
+          {
+            userId: email,
+          }
+        );
+
+        if (response.data.responseMessage === "Login Success") {
+          toast.success("User logged in successfully");
+          localStorage.setItem("loginType", "google");
+          navigate("/Dashboard");
+        } else {
+          toast.error("User is not registered! Please contact administrator");
+        }
+      } catch (err) {
+        console.error("Google login error:", err);
+        toast.error("Something went wrong during Google login");
+      }
+    },
+    onError: () => {
+      console.log("Google login failed");
+      toast.error("Google login failed");
+    },
+    prompt: 'select_account',
+    ux_mode: 'popup'
+  });
+
   const handleLogin = async () => {
     try {
       localStorage.clear();
 
-      // 1. Logout all existing accounts to clear MSAL cache
       const accounts = instance.getAllAccounts();
       for (const account of accounts) {
         await instance.logoutPopup({
           postLogoutRedirectUri: "http://localhost:3000/",
-          // postLogoutRedirectUri: "http://192.168.2.8:667/",
-          // postLogoutRedirectUri: "https://load-sheet-xi.vercel.app/",
           account,
         });
       }
 
-      // 2. Force fresh login with prompt
       const response = await instance.loginPopup({
         ...loginRequest,
-        prompt: "select_account", // Forces account chooser
+        prompt: "select_account",
       });
 
       console.log("Full login response:", response);
@@ -44,7 +84,6 @@ const Login = () => {
         return;
       }
 
-      // 3. Check if user exists in DB
       const apiResponse = await axios.post(
         `${Environment.BaseAPIURL}/CheckLoginByFlightCode`,
         {
@@ -57,41 +96,39 @@ const Login = () => {
       if (apiResponse?.data?.responseMessage === "Login Success") {
         setUser(apiResponse?.data?.userId);
         setStationCode(apiResponse?.data?.stationCode);
-        toast.success("User logged in successfully  ");
+        toast.success("User logged in successfully");
+        localStorage.setItem("loginType", "microsoft");
         navigate("/Dashboard");
       } else {
-        // alert("User does not exist");
-        toast.error(
-          "User is not registered ! Please contact to administrator",
-          {
-            autoClose: 5000,
-          }
-        );
-        // 4. Logout again to ensure cache is cleared
+        toast.error("User is not registered! Please contact administrator", {
+          autoClose: 5000,
+        });
+
         const account = response.account;
         await instance.logoutPopup({
           postLogoutRedirectUri: "http://localhost:3000/",
-          // postLogoutRedirectUri: "http://192.168.2.8:667/",
-          // postLogoutRedirectUri: "https://load-sheet-xi.vercel.app/",
           account,
         });
       }
     } catch (error) {
       console.error("Login failed:", error);
-      // if (!error.errorMessage?.includes("AADB2C90118")) {
-      //   alert("Login failed. Please try again.");
-      // }
     }
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container"  style={{
+    // backgroundImage: "url('/images/bg.jpg')",
+    backgroundImage: "url('/images/image.png')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}>
       <div className="animated-text">Welcome to AIX LOAD SHEET Portal</div>
       <div className="login-box">
         <div className="login-left">
           <img
-            // src="/images/AirIndiaExpress.png"
-            src="images/leftimage.jpg"
+            // src="images/leftimage.jpg"
+            src="images/AirIndiaExpress.png"
             alt="Air India Express Logo"
             className="login-logo"
           />
@@ -108,6 +145,8 @@ const Login = () => {
           <p>
             To continue, please log in using your Microsoft or Google account.
           </p>
+
+          {/* Microsoft Login Button */}
           <button className="login-button" onClick={handleLogin}>
             <div
               style={{
@@ -126,7 +165,9 @@ const Login = () => {
             </div>
             Log in with Microsoft
           </button>
-          <button className="login-button" onClick={handleLogin}>
+
+          {/* Google Login Button */}
+          <button className="login-button" onClick={() => googleLogin()}>
             <div
               style={{
                 height: "20px",
@@ -138,7 +179,7 @@ const Login = () => {
             >
               <img
                 src="/images/google.png"
-                alt=""
+                alt="Google"
                 style={{ height: "100%", width: "100%" }}
               />
             </div>

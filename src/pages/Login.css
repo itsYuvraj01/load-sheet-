@@ -2,7 +2,7 @@
 
 .login-container {
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     margin: 0;
     padding: 2rem;
     box-sizing: border-box;
@@ -11,6 +11,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    /* background-image: url("/images/bg.jpg"); */
   }
 
   @keyframes slideRightToLeft {
@@ -27,7 +28,8 @@
     top: 5px;
     left: 0;
     white-space: nowrap;
-    color: white;
+    /* color: rgb(211, 138, 3); */
+    color: red;
     font-family: "Roboto Slab", serif;
     font-weight: bold;
     font-size: 1.5rem;
@@ -40,11 +42,13 @@
     display: flex;
     width: 80%;
     max-width: 1000px;
-    background-color: #ffffff;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
     border-radius: 20px;
     overflow: hidden;
     /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); */
-    box-shadow: 10px 10px 10px rgb(80, 51, 7);
+   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+   border: 1px solid rgba(255, 255, 255, 0.3);
   }
   
   .login-right {
@@ -67,11 +71,12 @@
     border: none;
     border-radius: 10px 0 0 10px;
     overflow: hidden;
+    /* background: #ffffff; */
   }
   
   .login-logo {
-    max-width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 45%;
     border: none;
   }
 
@@ -103,24 +108,28 @@
   
   .login-button {
     padding: 12px 24px;
-    background-color: #01121f;
-    color: #fff;
+    /* background-color: #01121f;
+    color: #fff; */
     border: none;
     border-radius: 8px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     width: 70%;
     font-family: "Roboto Slab", serif;
+    background-color: #dddfdf;
+    color: black;
+    box-shadow: 2px 2px 2px rgb(247, 223, 116);
   }
   
   .login-button:hover {
-    background-color: #005ea2;
+     background-color: #01121f;
+    color: #fff;
   }
   
   @media (max-width: 768px) {
