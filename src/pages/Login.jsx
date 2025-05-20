@@ -1,5 +1,5 @@
 import { useMsal } from "@azure/msal-react";
-import "./Login.css";
+// import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { loginRequest } from "../authConfig";
 import axios from "axios";
@@ -10,34 +10,33 @@ import "react-toastify/dist/ReactToastify.css";
 import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
-  const { instance } = useMsal();
-  const navigate = useNavigate();
-  const [user, setUser] = useState("");
-  const [stationCode, setStationCode] = useState("");
+  const { instance } = useMsal();                              //instance of microsoft login
+  const navigate = useNavigate();                              //used to move from one page to another
+  const [user, setUser] = useState("");                        //used to store login response of api after login
+  const [stationCode, setStationCode] = useState("");          //used to store login response of api after login
 
+  // google login button functionality
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
         const accessToken = tokenResponse.access_token;
-
         // Fetch Google user info using access token
-        const { data } = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        console.log("Google login success:", data);
-
+        const { data } = await axios.get(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        // console.log("Google login success:", data);
         const email = data.email;
-
         const response = await axios.post(
           `${Environment.BaseAPIURL}/CheckLoginByFlightCode`,
           {
             userId: email,
           }
         );
-
         if (response.data.responseMessage === "Login Success") {
           toast.success("User logged in successfully");
           localStorage.setItem("loginType", "google");
@@ -54,45 +53,39 @@ const Login = () => {
       console.log("Google login failed");
       toast.error("Google login failed");
     },
-    prompt: 'select_account',
-    ux_mode: 'popup'
+    prompt: "select_account",
+    ux_mode: "popup",
   });
 
+  // microsoft login functionality
   const handleLogin = async () => {
     try {
       localStorage.clear();
-
       const accounts = instance.getAllAccounts();
       for (const account of accounts) {
         await instance.logoutPopup({
           postLogoutRedirectUri: "http://localhost:3000/",
+          // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
           account,
         });
       }
-
       const response = await instance.loginPopup({
         ...loginRequest,
         prompt: "select_account",
       });
-
-      console.log("Full login response:", response);
-
+      // console.log("Full login response:", response);
       const email = response.account?.username;
-
       if (!email) {
         alert("Login failed: Email not found.");
         return;
       }
-
       const apiResponse = await axios.post(
         `${Environment.BaseAPIURL}/CheckLoginByFlightCode`,
         {
           userId: email,
         }
       );
-
-      console.log("API Response:", apiResponse);
-
+      // console.log("API Response:", apiResponse);
       if (apiResponse?.data?.responseMessage === "Login Success") {
         setUser(apiResponse?.data?.userId);
         setStationCode(apiResponse?.data?.stationCode);
@@ -103,10 +96,10 @@ const Login = () => {
         toast.error("User is not registered! Please contact administrator", {
           autoClose: 5000,
         });
-
         const account = response.account;
         await instance.logoutPopup({
           postLogoutRedirectUri: "http://localhost:3000/",
+          // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
           account,
         });
       }
@@ -116,13 +109,17 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container"  style={{
-    // backgroundImage: "url('/images/bg.jpg')",
-    backgroundImage: "url('/images/image.png')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}>
+    <div
+      className="login-container"
+      style={{
+        backgroundImage: "url('/images/bg1.jpg')",
+        // backgroundImage: "url('/images/bg.jpg')",
+        // backgroundImage: "url('/images/aix.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="animated-text">Welcome to AIX LOAD SHEET Portal</div>
       <div className="login-box">
         <div className="login-left">

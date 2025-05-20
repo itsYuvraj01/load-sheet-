@@ -11,6 +11,7 @@ const Navbar = () => {
   const reportRef = useRef();
   const adminRef = useRef();
 
+  // to open and autoclose the list below administration and report 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -35,26 +36,10 @@ const Navbar = () => {
     setOpenAdmin(false); // close admin
   };
 
+  // logout functionality 
   const { instance } = useMsal();
-  // const handleLogOut = () => {
-  //   instance.logoutPopup().catch((error) => {
-  //     console.error("Logout failed:", error);
-  //   });
-  //   // navigate("/")
-  // }
-//   const handleLogOut = () => {
-//   instance.logoutPopup({
-//     postLogoutRedirectUri: "/", // This can be any route you want to redirect to
-//   }).then(() => {
-//     navigate("/");
-//   }).catch((error) => {
-//     console.error("Logout failed:", error);
-//   });
-// };
-
-const handleLogOut = async () => {
+  const handleLogOut = async () => {
   const loginType = localStorage.getItem("loginType");
-
   try {
     localStorage.clear();
     sessionStorage.clear();
@@ -76,14 +61,13 @@ const handleLogOut = async () => {
   }
 };
 
-
   return (
     <div className="navbar">
       <div className="main-navbar">
         <div className="image-container">
           <img src="/images/AirIndiaExpress.png" alt="Airline Express Logo" className="logo" />
         </div>
-        <div className="nav-heading">AIX LOAD SHEET</div>
+        {/* <div className="nav-heading">AIX LOAD SHEET</div> */}
         <div className="pages-link">
           <div className="page-link" onClick={() => navigate("/Dashboard")}>
             <span>Dashboard</span>
@@ -93,6 +77,9 @@ const handleLogOut = async () => {
             <span>Administration ▾</span>
             {openAdmin && (
               <div className="dropdown-menu">
+                <div className="dropdown-item" onClick={() => navigate("/Add-Role")}>
+                  Add Role
+                </div>
                 <div className="dropdown-item" onClick={() => navigate("/Add-User")}>
                   Add User
                 </div>

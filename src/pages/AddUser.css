@@ -1,15 +1,24 @@
 .main-container-user {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    display: flex;
+    /* height: 100vh; */
     padding-top: 77px;
     padding-bottom: 1.9rem;
-    background-color: #f8f9fa; /* subtle background for better contrast */
+    background-color: #f8f9fa; 
   }
+
+  /* .role-top-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+} */
   
   .User-container {
     height: 100%;
     width: 100%;
-    padding: 0.5rem 0;
+    padding: 0.5rem 15px;
     background-color: #fff;
   }
   
@@ -18,20 +27,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     margin: 0 auto;
     padding: 0.7rem 0.5rem 0.7rem 1rem; /* top: 0.7rem, right: 0.5rem, bottom: 0.7rem, left: 1rem */
     gap: 1rem;
     background-color: #ffffff;
     border-radius: 6px;
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); */
   }
   
   .user-form-upper-part {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    /* justify-content: space-between; */
+    width: 102%;
     flex-wrap: wrap; /* allows responsiveness */
     gap: 1rem;
   }
@@ -45,10 +53,28 @@
   }
   
   .boxes {
-    width: 280px;
+    width: 322px;
     position: relative;
     height: 50px;
   }
+
+  @media screen and (max-width: 1372px) {
+   .boxes {
+    width: 310px;
+  }
+}
+
+@media screen and (max-width: 1320px) {
+   .boxes {
+    width: 290px;
+  }
+}
+
+@media screen and (max-width: 1250px) {
+   .boxes {
+    width: 275px;
+  }
+}
   
   .user-input {
     width: 100%;
@@ -65,16 +91,6 @@
     border-color: #007bff;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
   }
-
-  /* .user-select{
-    width: 100%;
-    padding: 0.6rem 0.5rem 0.6rem 1.9rem; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-    height: 90px;
-  } */
   
   .boxes select {
     height: 100%;
@@ -94,14 +110,29 @@
   .error-message {
   color: #e74c3c; /* red tone */
   font-size: 0.8rem;
+  font-weight: bold;
   margin-top: 4px;
   padding-left: 2px;
 }
 
-
 .user-input.error-border {
   border-color: #e74c3c;
   box-shadow: 0 0 4px rgba(231, 76, 60, 0.3);
+}
+
+.add-bulk{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 1.4rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: rgb(17, 128, 231);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
 }
   
   .user-add {
@@ -137,12 +168,8 @@
   }
 
   .user-container-part-2{
-    /* display: flex; */
     max-width: 28%;
-    /* align-items: center; */
-    /* justify-content: space-between; */
     padding: 0.5rem 1.9rem;
-    /* gap: 0.5rem; */
     margin-left: auto;
     margin-bottom: 0.5rem;
   }
@@ -161,7 +188,6 @@
     border: 1px solid grey;
     border-radius: 5px;
     cursor: pointer;
-    /* height: 30px; */
     height: 100%;
   }
 
@@ -171,55 +197,55 @@
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
   }
 
-  .table-scroll-verticall {
-    max-height: 80vh;
-    overflow-y: auto;
-    margin-bottom: 2rem;
-    border-top: 1px solid #181717;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Table base styling */
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    table-layout: fixed;
-    margin-bottom: 2rem;
-  }
-  
-  /* Header styling */
-  thead th {
-    position: sticky;
-    top: 0;
-    background-color: #fde0a9;
-    color: #0b0b0b;
-    font-weight: 600;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    z-index: 2;
-  }
-  
-  /* Cell styling */
-  th, td {
-    text-align: center;
-    padding: 0.6rem;
-    font-size: 0.95rem;
-    border: 1px solid #ccc;
-    word-wrap: break-word;
-  }
-  
-  /* Row hover */
-  tbody tr:hover {
-    background-color: #ffedc5;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  /* Cell text */
-  td {
-    color: #222;
-  }
-  
+  /* .table-scroll-vertical {
+  max-height: 80vh;
+  overflow-y: auto;
+  margin-bottom: 2rem;
+  border: 1px solid #181717;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Table base styling */
+/* table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  table-layout: fixed;
+} */
+
+/* Header styling */
+/* thead th {
+  position: sticky;
+  top: 0;
+  background-color: #fde0a9;
+  color: #0b0b0b;
+  font-weight: 600;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  z-index: 2;
+} */
+
+/* Cell styling */
+/* th,
+td {
+  text-align: center;
+  padding: 0.6rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  word-wrap: break-word;
+} */
+
+/* Row hover */
+/* tbody tr:hover {
+  background-color: #ffedc5;
+  transition: background-color 0.2s ease-in-out;
+} */
+
+/* Cell text */
+/* td {
+  color: #222;
+} */ 
+
   /* Responsive tweaks */
   /* @media (max-width: 768px) {
     th, td {
@@ -227,4 +253,189 @@
       padding: 0.4rem;
     }
   } */
+
+  .doprzone-container-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: #f8db9b;
+  position: relative; /* <-- Add this */
+}
+
+
+  .top-right-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  padding: 0.5rem 1rem;
+  background-color: green;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10;
+}
+  
+.dropzone-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  width: 40%;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dropzone-area {
+  height: 150px;
+  width: 100%;
+  /* max-width: 600px; */
+  background-color: #faf1ea;
+  border: 2px dashed #eb6e07;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  padding: 20px;
+  color: #555;
+  font-size: 16px;
+}
+
+.dropzone-area.active {
+  background-color: #e3f2fd;
+}
+
+.dropzone-text {
+  font-size: 14px;
+  color: #888;
+  margin-top: 8px;
+}
+
+.dropzone-text-active {
+  color: #4a90e2;
+  font-weight: bold;
+}
+
+.dropzone-icon {
+  font-size: 20px;
+}
+
+.closeDropDown{
+  padding: 0.5rem 1rem;
+  background-color: rgb(14, 140, 199);;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.uploaded-file-name {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.validation-excel-buttons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.file-buttons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.validate-button{
+  padding: 0.5rem 1rem;
+  background-color: rgb(20, 199, 14);
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.delete-button{
+   padding: 0.5rem 1rem;
+  background-color: rgb(240, 7, 7);
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+ /* padding: 0.5rem 1rem;
+  background-color: rgb(199, 14, 14);
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer; */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.duplicate-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.duplicate-table th, .duplicate-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.duplicate-excel-button{
+  border: none;
+  background: red;
+  color: white;
+  font-size: 1.2rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.submit-excel-data{
+  border: none;
+  background: rgb(2, 63, 2);
+  color: white;
+  font-size: 1.2rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
   

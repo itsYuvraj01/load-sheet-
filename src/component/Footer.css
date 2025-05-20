@@ -1,14 +1,18 @@
-.footer{
+footer {
     width: 100%;
     position: fixed;
     bottom: 0;
+    left: 0;
     z-index: 1000;
     background: #ff7800;
     color: white;
     text-align: left;
-    margin-top: 2px;
-    padding: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    transform: translateZ(0);
+    will-change: transform;
 }
+
 
 .Card-container{
     display: flex;

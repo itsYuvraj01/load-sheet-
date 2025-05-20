@@ -1,0 +1,228 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans+Deva:wght@100..800&family=Roboto+Slab:wght@100..900&display=swap'); */
+
+.role-container {
+  margin-top: 80px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.role-top-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+}
+
+.role-top-left-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 300px;
+}
+
+.role-upper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-input {
+  width: 100%;
+  max-width: 350px;
+  height: 70px;
+}
+
+.role-select{
+  width: 100%;
+  max-width: 350px;
+  height: 70px;
+}
+
+@media screen and (max-width: 1300px) {
+  .role-input {
+  max-width: 290px;
+}
+
+.role-select{
+  max-width: 290px;
+}
+}
+
+.role-text-input {
+    width: 100%;
+    padding: 0.8rem 0.5rem 0.8rem 1.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.role-text-select{
+     width: 100%;
+    padding: 0.4rem 0.5rem 0.4rem 1.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+     transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.role-text-select.error-border{
+  border-color: #e74c3c;
+  box-shadow: 0 0 4px rgba(231, 76, 60, 0.3);
+}
+
+.role-text-input.error-border{
+     border-color: #e74c3c;
+  box-shadow: 0 0 4px rgba(231, 76, 60, 0.3);
+}
+
+.role-text-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.role-down {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-top-right-container {
+  flex: 1;
+  max-width: 500px;
+  background-color: #fdfdfd;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); /* softer orange shadow */
+  border: 1px solid orange;
+}
+
+/* Section heading */
+.assing-permission {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Accordion Container */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+}
+
+/* Accordion Item */
+.accordion-item {
+  margin: 0;
+  padding: 0;
+}
+
+/* Accordion Button (Header) */
+.accordion-button {
+  background-color: #f1f1f1;
+  border: none;
+  padding: 8px 12px; /* reduced padding */
+  width: 100%;
+  font-size: 13px;    /* slightly smaller font */
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+  min-height: 36px; /* compact height */
+  line-height: 1.2;
+}
+
+.accordion-button:hover {
+  background-color: #e2e2e2;
+}
+
+/* Toggle Icon */
+.accordion-icon {
+  font-size: 12px;
+  margin-left: 10px;
+  transition: transform 0.2s ease;
+}
+
+.accordion-button.open .accordion-icon {
+  transform: rotate(360deg); /* better UX than 360deg */
+}
+
+/* Accordion Body */
+.accordion-body {
+  background-color: #fff;
+  padding: 6px 14px; /* smaller padding */
+  font-size: 13px;
+  animation: fadeIn 0.25s ease-in-out;
+  /* max-height: 50px; */
+}
+
+/* Fade animation for smooth opening */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scaleY(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+/* Permission item styles */
+.permission-item {
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.permission-item:hover {
+  background-color: #f1f1f1;
+}
+
+.permission-item.selected {
+  background-color: #f7ed98;
+  font-weight: 600;
+}
+
+/* Error message styling */
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Responsive Design
+@media (max-width: 768px) {
+  .role-top-container {
+    flex-direction: column;
+  }
+
+  .role-top-right-container {
+    max-width: 100%;
+    margin-top: 16px;
+  }
+} */
+
+.role-middle-container{
+    display: flex;
+    align-items: flex-end;
+    padding-left: 75%;
+    margin-top: 1rem;
+}
