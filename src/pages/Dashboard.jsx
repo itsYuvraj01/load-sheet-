@@ -3,10 +3,11 @@ import "./Dashboard.css"
 import "../component/Footer.css"
 import "../component/Navbar.css"
 import "../component/Spinner.css"
-
-import { MdFlight } from "react-icons/md"
-import { RiPrinterFill } from "react-icons/ri"
-import { TbMessageReportFilled } from "react-icons/tb"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faPlaneDeparture,faPrint,faMoneyBill1} from '@fortawesome/free-solid-svg-icons';
+// import { MdFlight } from "react-icons/md"
+// import { RiPrinterFill } from "react-icons/ri"
+// import { TbMessageReportFilled } from "react-icons/tb"
 import Spinner from '../component/Spinner'
 const Cards = lazy(() => import('../component/Cards'))
 const Navbar = lazy(() => import('../component/Navbar'))
@@ -21,10 +22,10 @@ function Dashboard() {
     <Navbar />
   <div className='dashboard-component'>
     {/* <Suspense fallback={<Spinner/>}> */}
-      <Cards heading="Total Active Stations" bgColor="#FFBE5D" icon={<MdFlight />} count="55"/>
-      <Cards heading="Total Active Printers" bgColor="#6C81F5" icon={<RiPrinterFill />} count="200"/>
-      <Cards heading="Total No. of Loadsheet Received" bgColor="#15DB67" icon={<TbMessageReportFilled />} count="2500"/>
-      <Cards heading="Total No. of Loadsheet Printed" bgColor="#F97775" icon={<TbMessageReportFilled />} count="2000"/>
+      <Cards heading="Total Active Stations" bgColor="#FFBE5D" icon={<FontAwesomeIcon icon={faPlaneDeparture} />} count="55"/>
+      <Cards heading="Total Active Printers" bgColor="#6C81F5" icon={<FontAwesomeIcon icon={faPrint} />} count="200"/>
+      <Cards heading="Total No. of Loadsheet Received" bgColor="#15DB67" icon={<FontAwesomeIcon icon={faMoneyBill1} />} count="2500"/>
+      <Cards heading="Total No. of Loadsheet Printed" bgColor="#F97775" icon={<FontAwesomeIcon icon={faMoneyBill1} />} count="2000"/>
     {/* </Suspense> */}
   </div>
 

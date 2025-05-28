@@ -3,7 +3,7 @@
     display: flex;
     /* height: 100vh; */
     padding-top: 77px;
-    padding-bottom: 1.9rem;
+    padding-bottom: 1.5rem;
     background-color: #f8f9fa; 
   }
 
@@ -18,7 +18,7 @@
   .User-container {
     height: 100%;
     width: 100%;
-    padding: 0.5rem 15px;
+    padding: 0 15px;
     background-color: #fff;
   }
   
@@ -38,7 +38,7 @@
   .user-form-upper-part {
     display: flex;
     align-items: center;
-    /* justify-content: space-between; */
+    justify-content: center;
     width: 102%;
     flex-wrap: wrap; /* allows responsiveness */
     gap: 1rem;
@@ -98,9 +98,9 @@
     border-radius: 4px;
   }
   
-  .boxes > span {
+  .boxes span {
     position: absolute;
-    top: 45%;
+    top: 21px;
     left: 8px;
     transform: translateY(-50%);
     color: #666;
@@ -196,6 +196,13 @@
     border-color: #007bff;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
   }
+
+  /* td .table-action{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  } */
 
   /* .table-scroll-vertical {
   max-height: 80vh;
@@ -437,5 +444,90 @@ td {
   border-radius: 8px;
   margin-top: 10px;
 }
+.delete-Modal-overLay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.delete-modal-content {
+  /* background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); */
+   background: white;
+  padding: 50px 29px;
+  height: 350px;
+  width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.warning-image{
+   width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
+}
+
+.text-para {
+  font-size: 22px;
+  margin-bottom: 25px;
+  font-weight: 500;
+  color: rgb(71, 71, 71);
+  font-weight: bold;
+}
+
+.delete-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.yes-button,
+.no-button {
+  padding: 10px 25px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.yes-button {
+  background-color: #0c5702;
+  color: white;
+}
+
+.yes-button:hover {
+  background-color: #048a37;
+}
+
+.no-button {
+  background-color: #f13709;
+  color: #fdfcfc;
+}
+
+.no-button:hover {
+  background-color: #660902;
+}
+
+
+
 
   

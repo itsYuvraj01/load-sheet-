@@ -2,12 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Report.css";
-import { FaCalendarAlt } from "react-icons/fa";
-import { IoSearchSharp } from "react-icons/io5";
+// import { FaCalendarAlt } from "react-icons/fa";
+// import { IoSearchSharp } from "react-icons/io5";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faMagnifyingGlass,faCalendarDays} from '@fortawesome/free-solid-svg-icons';
 // import { RiFileExcel2Line } from "react-icons/ri";
 import Navbar from "../component/Navbar";
 import Footer from "../component/Footer";
-import data from "../Data/Data";
+// import data from "../Data/Data";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Environment from "../Environment";
@@ -29,30 +31,18 @@ const Report = () => {
   const [tableData, setTableData] = useState([]);                   //it stores the loadsheet api data for table
   const [filterData, setFilterData] = useState([]);                 //it is used to make filtration in table data
   const [loading, setLoading] = useState(false);                    //loader
+  const [isVisible,setIsVisible] = useState(null)
+  const [detailData,setDetailData] = useState([]);
+  const [secondTableData,setSecondTableData] = useState([]);
 
   // api to get station drop down data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          `${Environment.BaseAPIURL}/GetPrintLoadSheetDt`,
-          {
-            action: "GetDestinations",
-          }
-        );
-        // console.log("station drop down", response?.data);
-        const arrayData = Array.isArray(response?.data) ? response?.data : [];
-        setStationData(arrayData);
-        // console.log("sta", stationData);
-        setLoading(false);
-      } catch (error) {
-        console.log("error in fetching stations", error);
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAllData = async () => {
+  //     setLoading(true);
+      
+  //   };
+  //   fetchAllData();
+  // }, []);  
 
   // api to get flight data
   useEffect(() => {
@@ -66,8 +56,6 @@ const Report = () => {
             Destination: selectedStation ? selectedStation : "",
           }
         );
-
-        // console.log("flight", response?.data);
         const flight = Array.isArray(response?.data) ? response?.data : [];
         setFlightData(flight);
         setLoading(false);
@@ -84,6 +72,7 @@ const Report = () => {
     console.log("current date", date);
     setStartDate(date);
   };
+  
   const handleStationChange = (e) => {
     setSelectedStation(e.target.value);
   };
@@ -110,17 +99,26 @@ const Report = () => {
       const response = await axios.post(
         `${Environment.BaseAPIURL}/GetPrintLoadSheetDt`,
         {
-          Action: "GetReport",
-          printDateTime: currentDate,
-          Destination: station,
-          FlightNo: flight,
+          "Action": "GetReport",
+          // "PrintDateTime": "2025-05-06",
+          "PrintDateTime": currentDate,
+          "Destination": station,
+          "FlightNo": flight,
         }
       );
-      console.log("table data", response?.data);
+      // console.log("table data", response?.data);
       const tablereport = Array.isArray(response?.data) ? response?.data : [];
       setTableData(tablereport);
       setFilterData(tablereport);
-      setLoading(false);
+      // console.log("table data",tablereport);
+      setIsVisible(null);
+
+        const response1 = await axios.post(`${Environment.BaseAPIURL}/GetPrintLoadSheetDt`,{action: "GetDestinations",});
+        // console.log("station drop down", response?.data);
+        const arrayData = Array.isArray(response1?.data) ? response1?.data : [];
+        setStationData(arrayData);
+        // console.log("sta", stationData);
+        setLoading(false);
     } catch (error) {
       console.log("error in fetching report table data", error);
       setLoading(false);
@@ -146,10 +144,19 @@ const Report = () => {
     fetchData(today, selectedStation || "", selectedFlight || "");
   };
 
-  // const [pageSize, setPageSize] = useState(10);
-  // const tableRef = useRef();
-
-  // it is used to searching in table
+  const handleDetails = (details,index) => {
+    if(isVisible === index){
+      setIsVisible(null);
+      setDetailData([]);
+      setSecondTableData([]);
+    }
+    else {
+      console.log("data",details)
+      setIsVisible(index);
+      setDetailData(details);
+      setSecondTableData(details);
+    }
+  }
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = (e) => {
     const search = e.target.value;
@@ -169,26 +176,38 @@ const Report = () => {
     setTableData(filtered);
   };
 
+  const [searcTerm2,setSearchTerm2] = useState("");
+  const handleSearch2 = (e) => {
+    const search = e.target.value;
+    setSearchTerm2(search);
+    if(search !== ""){
+      filterDataFunction(search)
+    } else{
+      setDetailData(secondTableData);
+    }
+  }
+
+  const filterDataFunction = (search) => {
+    const filtered = secondTableData.filter((data) => Object.values(data).some((value)=> String(value).toLowerCase().includes(search.toLowerCase())))
+    setDetailData(filtered);
+  }
+
   // export table data into excel functionality
   const exportToExcel = () => {
     const excelData = tableData.slice();
     const excel = excelData.map((item, index) => ({
       "Sr. no.": index + 1,
-      Date: dateData,
+      "Date": dateData,
       "Flight No": item.flightNo,
-      Sector: item.destination,
+      "Sector": item.destination,
       "LoadSheet Name": item.loadsheetname,
-      "LoadSheet Recieve Date/Time": item.loadsheetrecievedDatetime,
-      "LoadSheet Print Date/Time": item.printDateTime,
-      "Printer Mac Address/ID": item.printMacAddress,
-      UserId: item.userId,
-      // "Prints count": item["No-of-Prints"],
+      "Prints count": item.printCount,
     }));
 
     // Convert JSON to sheet
     const worksheet = XLSX.utils.json_to_sheet(excel, { origin: "A2" }); // Start at A2 to leave space for header
     // Add custom title row
-    XLSX.utils.sheet_add_aoa(worksheet, [["Load Sheet Details"]], {
+    XLSX.utils.sheet_add_aoa(worksheet, [["Load Sheet Report"]], {
       origin: "A1",
     });
     // Merge cells for main header across all columns (A1 to I1)
@@ -208,6 +227,45 @@ const Report = () => {
       type: "application/vnd.openxmlformats-officedocument.spreadsheet.sheet;charset=UTF-8",
     });
     saveAs(blob, "Load Sheet Report.xlsx");
+  };
+
+  const exportToExcel2 = () => {
+    const excelData = detailData.slice();
+    const excel = excelData.map((item, index) => ({
+      "Sr. no.": index + 1,
+      "Date": dateData,
+      "Flight No": item.flightNo,
+      "Sector": item.destination,
+      "LoadSheet Name": item.loadsheetname,
+      "LoadSheet Recieve Date/Time": formatTimestamp(item.loadsheetrecievedDatetime),
+      "LoadSheet Print Date/Time": formatTimestamp(item.printDateTime),
+      "Printer Mac Address/ID": item.printMacAddress,
+      "UserId": item.userId,
+    }));
+
+    // Convert JSON to sheet
+    const worksheet = XLSX.utils.json_to_sheet(excel, { origin: "A2" }); // Start at A2 to leave space for header
+    // Add custom title row
+    XLSX.utils.sheet_add_aoa(worksheet, [["Load Sheet Detailed Report"]], {
+      origin: "A1",
+    });
+    // Merge cells for main header across all columns (A1 to I1)
+    worksheet["!merges"] = [
+      {
+        s: { r: 0, c: 0 }, // start cell (row 0, column 0 => A1)
+        e: { r: 0, c: 8 }, // end cell (row 0, column 8 => I1)
+      },
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheet.sheet;charset=UTF-8",
+    });
+    saveAs(blob, "Load Sheet Detailed Report.xlsx");
   };
 
   const formatTimestamp = (timestamp) => {
@@ -242,9 +300,11 @@ const Report = () => {
                   Start Date
                 </label>
                 <span className="calender">
-                  <FaCalendarAlt />
+                  {/* <FaCalendarAlt /> */}
+                  <FontAwesomeIcon icon={faCalendarDays} />
                 </span>
-                <div className="react-datepicker-wrapper"><DatePicker
+                <div className="react-datepicker-wrapper">
+                  <DatePicker
                   id="start-date"
                   selected={startDate}
                   onChange={handleStartDateChange}
@@ -302,7 +362,8 @@ const Report = () => {
             <div className="report-container-part-2">
               <div className="report-search-button">
                 <span className="search-icon">
-                  <IoSearchSharp />
+                  {/* <IoSearchSharp /> */}
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </span>
                 <input
                   type="text"
@@ -333,10 +394,7 @@ const Report = () => {
                   <th>Flight No.</th>
                   <th>Sector</th>
                   <th>LoadSheet Name</th>
-                  <th>LoadSheet Recieve Date/Time</th>
-                  <th>LoadSheet Print Date/Time</th>
-                  <th>Printer Mac Address/ID</th>
-                  <th>UserId</th>
+                  <th>Prints Count</th>
                   {/* <th>Prints count</th> */}
                 </tr>
               </thead>
@@ -348,19 +406,70 @@ const Report = () => {
                     <td>{item.flightNo}</td>
                     <td>{item.destination}</td>
                     <td>{item.loadsheetname}</td>
-                    <td>{formatTimestamp(item.loadsheetrecievedDatetime)}</td>
-                    {/* <td>{item.loadsheetrecievedDatetime}</td> */}
-                    <td>{formatTimestamp(item.printDateTime)}</td>
-                    {/* <td>{item.printDateTime}</td> */}
-                    <td>{item.printMacAddress}</td>
-                    <td>{item.userId}</td>
-                    {/* <td>{item["No-of-Prints"]}</td> */}
+                    <td style={{fontWeight:"bold",color:"blue",cursor:"pointer"}} onClick={(e) => {handleDetails(item.details,index)}}>{item.printCount}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* <div>Pagination</div> */}
+          {isVisible !== null && <div>
+            <div className="report-container-part-2">
+              <div className="report-search-button">
+                <span className="search-icon">
+                  {/* <IoSearchSharp /> */}
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  onChange={handleSearch2}
+                  className="report-search-input"
+                />
+              </div>
+              <div className="download-excel" onClick={exportToExcel2}>
+                {/* <RiFileExcel2Line className="excel-icon" />  */}
+                Export
+                <div className="excel-icon-container">
+                  <img
+                    src="/images/excel.png"
+                    alt=""
+                    style={{ height: "100%", width: "100%" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="table-scroll-vertical" style={{marginTop:"1rem"}}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Sr. no</th>
+                  {/* <th>Date</th> */}
+                  <th>Flight No.</th>
+                  <th>Sector</th>
+                  <th>LoadSheet Name</th>
+                  <th>LoadSheet Recieve Date/Time</th>
+                  <th>LoadSheet Print Date/Time</th>
+                  <th>Printer Mac Address/ID</th>
+                  <th>UserId</th>
+                  {/* <th>Prints count</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {detailData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.flightNo}</td>
+                    <td>{item.destination}</td>
+                    <td>{item.loadsheetname}</td>
+                    <td>{formatTimestamp(item.loadsheetrecievedDatetime)}</td>
+                    <td>{formatTimestamp(item.printDateTime)}</td>
+                    <td>{item.printMacAddress}</td>
+                    <td>{item.userId}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div></div>}
         </div>
         <Footer />
       </div>

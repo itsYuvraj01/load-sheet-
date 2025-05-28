@@ -1,29 +1,37 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy, Suspense, useRef } from "react";
 import "../component/Footer.css"
 import "../component/Navbar.css"
-// import Navbar from "../component/Navbar";
-// import Footer from "../component/Footer";
 import "./AddRole.css"; // Import CSS here
 import Switch from "react-switch";
-import { IoSearchSharp } from "react-icons/io5";
-// import roleData from "../Data/RoleData";
-import { FaEdit } from "react-icons/fa";
+// import { IoSearchSharp } from "react-icons/io5";
+// import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import Environment from "../Environment";
 import Spinner from "../component/Spinner";
-import { toast } from "react-toastify";
-
-// import Navbar from "../component/Navbar";
+import PopUpModal from "../component/PopUpModal";
+import secureLocalStorage from "react-secure-storage";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faUserTie,faMagnifyingGlass,faPenToSquare} from '@fortawesome/free-solid-svg-icons';
 const Navbar = lazy(() => import('../component/Navbar'))
-// import Footer from "../component/Footer";
 const Footer = lazy(() => import('../component/Footer'))
-
 const AddRole = () => {
+  const userId = secureLocalStorage.getItem("userId");
+  const IpAddress = secureLocalStorage.getItem("IP")
   const rolePermissions = {
-    Dashboard: ["Dashboard"],
-    Administration: ["Add Role", "Add User"],
-    Reports: ["Load Sheet Details"],
+    DashBoard: ["Dashboard"],
+    Administration: ["Add Role", "Add User","Add Organisation"],
+    Reports: ["Load Sheet Details","AuditReport"],
+    Assign_Permission_For_App: ["View & Print","Print"]
   };
+
+  const cleaned = Object.fromEntries(
+  Object.entries(rolePermissions).map(([key, value]) => [
+    key.replace(/_/g, " "), // remove all underscores
+    value
+  ])
+);
+
+console.log(cleaned);
   const [loading,setLoading] = useState(false);
   const [accordionStates, setAccordionStates] = useState({});
   const [selectedRolePermissions, setSelectedRolePermissions] = useState([]);
@@ -33,13 +41,9 @@ const AddRole = () => {
   const [reportsTo,setReportTo] = useState("");
   const [searchTerm,setSearchTerm] = useState("");
   const [tableData,setTableData] = useState([]);
-//   const [tableData,setTableData] = useState(roleData);
   const [filterData,setFilterData] = useState([]);
-//   const [filterData,setFilterData] = useState(roleData);
   const [roleError,setRoleError] = useState("");
   const [roleData1,setRoleData1] = useState([]);
-//   const [roleData1,setRoleData1] = useState(roleData);
-  //const [roleError,setRoleError] = useState("");
   const [status,setStatus] = useState(1)
   const [editingIndex,setEditingIndex] = useState(null)
   const [emptyFields,setEmptyFields] = useState({
@@ -47,15 +51,25 @@ const AddRole = () => {
     reportsTo:false
   });
   const [rolePermissionList,setRolePermissionList] = useState([]);
-
+  const [showPopUpModal,setShowPopUpModal] = useState(false);
+  const [text,setText] = useState("");
+  const Uid = secureLocalStorage.getItem("UID")
   const handleAccordionPermissionToggle = (permission) => {
-    setSelectedRolePermissions((prev) =>
-      prev.includes(permission)
-        ? prev.filter((p) => p !== permission)
-        : [...prev, permission]
-    );
-    setPermissionError("");
-  };
+  setSelectedRolePermissions((prev) => {
+    const index = prev.findIndex(p => p.PageUrl === permission);
+    if (index !== -1) {
+      // Toggle off
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    } else {
+      // Toggle on
+      return [...prev, { PageUrl: permission, IsActive: 1 }];
+    }
+  });
+  setPermissionError("");
+};
+
 
   const roleChange = (e) => {
     setRoleName(e.target.value);
@@ -75,9 +89,13 @@ const AddRole = () => {
     }
   }
 
+  const removeAllSpaces = (str) => {
+  return str.replace(/\s+/g, '');
+  };
    // to check the duplicate email
   const checkDuplicateRole = (role) => {
-    return roleData1.some( user => String(user.roleName).toLowerCase() === role.toLowerCase())
+    const roleName = removeAllSpaces(role);
+    return roleData1.some( user => String(user.roleName).toLowerCase() === roleName.toLowerCase())
   };
 
   // searching functionality
@@ -99,51 +117,43 @@ const AddRole = () => {
     setTableData(filtered);
   };
 
-//   drop down data api
-  useEffect(()=>{
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post(`${Environment.BaseAPIURL}/GetRolenameAndData`,{
-                "Action": "RoleName"
-            });
-            // console.log("role drop down response",response?.data);
-            const da = Array.isArray(response?.data) ? response?.data : [];
-            setReportDropDown(da);
-        } catch (error) {
-            console.log("error in fetching report",error);
-        }
-    }
-    fetchData();
-  },[])
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      // Fetch RoleName dropdown data
+      const roleNameResponse = await axios.post(`${Environment.BaseAPIURL}/GetRolenameAndData`, {
+        "Action": "RoleName"
+      });
+      const roleNameData = Array.isArray(roleNameResponse?.data) ? roleNameResponse.data : [];
+      setReportDropDown(roleNameData);
 
-//   table data api
-  useEffect(()=>{
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post(`${Environment.BaseAPIURL}/GetRolenameAndData`,{
-                "Action": "RoleData"
-            });
-            console.log("role drop down response",response?.data);
-            const data = Array.isArray(response?.data) ? response?.data : []
-            setTableData(data);
-            setFilterData(data);
-            setRoleData1(data);
-            // toast.success("data found")
-        } catch (error) {
-            console.log("error in fetching report",error);
-        }
+      // Fetch RoleData table data
+      const roleDataResponse = await axios.post(`${Environment.BaseAPIURL}/GetRolenameAndData`, {
+        "Action": "RoleData"
+      });
+      const roleData = Array.isArray(roleDataResponse?.data) ? roleDataResponse.data : [];
+      setTableData(roleData);
+      setFilterData(roleData);
+      setRoleData1(roleData);
+
+    } catch (error) {
+      console.log("Error fetching role name or data", error);
+    } finally {
+      setLoading(false);
     }
-    fetchData();
-  },[])
+  };
+
+  fetchData();
+}, []);
+
 
   const handleSubmit = async(e) => {
   e.preventDefault();
   const emptyFieldsCopy = {...emptyFields}
   let hasEmptyFiled = false;
   if(!roleName){
-    emptyFieldsCopy.roleName = true;
+    emptyFieldsCopy.roleName = true;        
     hasEmptyFiled = true
   }
   else{
@@ -175,21 +185,39 @@ const AddRole = () => {
   if(role){
     return;
   }
-  const formData = { 
-    roleName,
-    reportsTo,
-    permissions: selectedRolePermissions,
-  };
+
+
+  const allPermissions = [];
+
+  // Loop over all parent and child permissions
+  // Object.entries(rolePermissions).forEach(([parent, children]) => {
+  Object.entries(cleaned).forEach(([parent, children]) => {
+    children.forEach(child => {
+      const selectedChild = selectedRolePermissions.find(sel =>
+        sel.PageUrl === child
+      );
+
+      allPermissions.push({
+        PageUrl: child,
+        IsActive: selectedChild?.IsActive == undefined || 0 ? 0 : 1
+      });
+
+      console.log(allPermissions, selectedChild, children, rolePermissions)
+    });
+  });
+
+
+ const formData = {
+  roleName: roleName,
+  reportsToRoleName: reportsTo,
+  permissions: allPermissions,
+  status: status,
+  action: editingIndex !== null ? "UpdateRole" : "AddRole",
+  loggedInId:Uid
+};
   setLoading(true);
   try {
-    const response = await axios.post(`${Environment.BaseAPIURL}/InsertallPagepermission`,{
-      "Action": editingIndex !== null ? "UpdateRole" : "AddRole",
-      "RoleName": roleName,
-      "ReportsToRoleName": reportsTo,
-      "Permissions": selectedRolePermissions,
-      "Status": status
-    }
-    );
+    const response = await axios.post(`${Environment.BaseAPIURL}/InsertallPagepermission`,formData);
     console.log("response after add",response?.data?.success);
     if(response?.data?.success){
       const tblData = await axios.post(`${Environment.BaseAPIURL}/GetRolenameAndData`,{
@@ -205,13 +233,35 @@ const AddRole = () => {
       setFilterData(data);
       setRoleData1(data);
       if(editingIndex!==null){
-        toast.success("Role Updated Successfully",{
-          autoClose:1500
-        })
+        setText("Role updated successfully");
+        setShowPopUpModal(true);
+        try {
+          const insertData = await axios.post(`${Environment.BaseAPIURL}/InsertAuditReport`,{
+             "IpAddress": IpAddress,
+             "Action": "Update Role",
+             "ProcessName": "Role Updated Successfully",
+             "UserId": userId
+          })
+          console.log("response insert in audit",insertData?.data?.response);
+          // console.log("Obj",obj)
+        } catch (error) {
+          console.log("error in sending data",error);
+        }
       }else{
-        toast.success("Role Added Successfully",{
-          autoClose:1500
-        })
+        setText("Role added successfully")
+        setShowPopUpModal(true);
+        try {
+          const insertData = await axios.post(`${Environment.BaseAPIURL}/InsertAuditReport`,{
+             "IpAddress": IpAddress,
+             "Action": "Add Role",
+             "ProcessName": "Role Added Successfully",
+             "UserId": userId
+          })
+          console.log("response insert in audit",insertData?.data?.response);
+          // console.log("Obj",obj)
+        } catch (error) {
+          console.log("error in sending data",error);
+        }
       }
     }
     setLoading(false);
@@ -220,13 +270,7 @@ const AddRole = () => {
     setLoading(false);
   }
   console.log("Form submitted:", formData);
-
-  // Reset form (optional)
-//   setRoleName('');
-//   setReportTo('');
-//   setSelectedRolePermissions([]);
-//   setAccordionStates({});
-   handleReset()
+  handleReset()
 };
 
 const handleReset = () => {
@@ -244,65 +288,76 @@ const handleReset = () => {
 
 const handleEdit = (index) => {
   const editData = tableData[index];
-  if (editData) {
-    setRoleName(editData.roleName);
-    setReportTo(editData.reportsToRoleName);
-    setEditingIndex(index);
-    setEmptyFields({
-      roleName: false,
-      reportsTo: false
-    });
-    setPermissionError("");
-
-    // Extract permission names
-    const extractedPermissions = editData.permissionList.map(p => p.pageUrl);
-    setSelectedRolePermissions(extractedPermissions);
-    setRolePermissionList(editData.permissionList);
-
-    // Automatically open accordions containing the permissions
-    const newAccordionStates = {};
-    Object.keys(rolePermissions).forEach((section, idx) => {
-      const sectionPermissions = rolePermissions[section];
-      const hasSelected = sectionPermissions.some(p => extractedPermissions.includes(p));
-      if (hasSelected) newAccordionStates[idx] = true;
-    });
-    setAccordionStates(newAccordionStates);
-  } else {
-    console.log("Edited user not found");
+  if (!editData) {
+    console.log("Edited role not found");
+    return;
   }
+
+  setRoleName(editData.roleName);
+  setReportTo(editData.reportsToRoleName);
+  setEditingIndex(index);
+  setEmptyFields({
+    roleName: false,
+    reportsTo: false
+  });
+  setPermissionError("");
+  console.log("permission list",editData.permissionList);
+  // Extract selected permissions
+  const extractedPermissions = editData.permissionList.map(p => ({
+    PageUrl: p.pageUrl,
+    IsActive: p.isActive
+  }));
+  setSelectedRolePermissions(extractedPermissions);
+  setRolePermissionList(editData.permissionList);
+
+  // Auto-open accordions that include selected permissions
+  const selectedUrls = extractedPermissions.map(p => p.PageUrl.toLowerCase()); // normalize casing
+  const newAccordionStates = {};
+
+  // Object.entries(rolePermissions).forEach(([section, children], idx) => {
+  Object.entries(cleaned).forEach(([section, children], idx) => {
+    const hasSelected = children.some(permission => 
+      selectedUrls.includes(permission.toLowerCase())
+    );
+    if (hasSelected) {
+      newAccordionStates[idx] = true;
+    }
+  });
+
+  setAccordionStates(newAccordionStates);
 
   // Scroll to top
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
   });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 };
+
 
   return (
     <Suspense fallback={<Spinner/>}>
+      {loading && <Spinner />}
     <div>
       <Navbar />
       <div className="role-container">
-        <form className="role-top-container" onSubmit={handleSubmit}>
+        <form className="role-top-container" onSubmit={handleSubmit} >
           {/* Left Side */}
           <div className="role-top-left-container">
             <div className="role-upper">
               <div className="role-input">
-                <input placeholder="Enter role name " 
-                value={roleName}
-                onChange={roleChange}
+                <span><FontAwesomeIcon icon={faUserTie} /></span>
+                <input placeholder="Enter role name "  value={roleName} onChange={roleChange}
                 className={`role-text-input ${emptyFields.roleName ? 'error-border' : ''}`} 
                 disabled = {editingIndex !== null}/>
                 {emptyFields.roleName && <div className="error-message">*Role is required</div>}
                 {roleError && <p className="error-message">{roleError}</p>}
               </div>
               <div className="role-select">
-                <select 
-                value={reportsTo}
-                onChange={reportToChange}
-                // className="role-text-input"
-                className={`role-text-select ${emptyFields.reportsTo ? 'error-border' : ''}`}
-                >
+                <span><FontAwesomeIcon icon={faUserTie} /></span>
+                <select  value={reportsTo} onChange={reportToChange}
+                className={`role-text-select ${emptyFields.reportsTo ? 'error-border' : ''}`}>
                   <option value="" disabled>
                     Select Reporting Manager
                   </option>
@@ -321,7 +376,6 @@ const handleEdit = (index) => {
                   setStatus(status === 1 ? 0 : 1)
                 }
               />}
-                      {/* )} */}
                       {editingIndex !== null ? (
                         <>
                           <button type="button" onClick={handleReset} className="user-reset">Reset</button>
@@ -337,9 +391,10 @@ const handleEdit = (index) => {
           </div>
           {/* Right Side - Accordion */}
           <div className="role-top-right-container">
-            <div className="assing-permission">Assign Permissions</div>
+            <div className="assing-permission">Assign permissions</div>
             <div className="accordion">
-              {Object.keys(rolePermissions).map((roleKey, index) => (
+              {/* {Object.keys(rolePermissions).map((roleKey, index) => ( */}
+              {Object.keys(cleaned).map((roleKey, index) => (
                 <div className="accordion-item" key={index}>
                   <div className="accordion-header">
                     <button
@@ -362,19 +417,23 @@ const handleEdit = (index) => {
                   </div>
                   {accordionStates[index] && (
                     <div className="accordion-body">
-                      {rolePermissions[roleKey].map((permission, idx) => (
+                      {/* {rolePermissions[roleKey].map((permission, idx) => ( */}
+                      {cleaned[roleKey].map((permission, idx) => (
                         <div
                           key={idx}
                           onClick={() =>
                             handleAccordionPermissionToggle(permission)
                           }
                           className={`permission-item ${
-                            selectedRolePermissions.includes(permission)
+                            // selectedRolePermissions.includes(permission)
+                            selectedRolePermissions.some(p => p.PageUrl === permission)
                               ? "selected"
                               : ""
                           }`}
                         >
-                          {selectedRolePermissions.includes(permission) ? (
+                          {selectedRolePermissions.some(p => p.PageUrl === permission)
+                          // {selectedRolePermissions.includes(permission)
+                           ? (
                             <strong>{permission}</strong>
                           ) : (
                             permission
@@ -386,6 +445,8 @@ const handleEdit = (index) => {
                 </div>
               ))}
             </div>
+
+             {/* <div className="assing-permission">Assign permissions for App</div> */}
             {permissionError && (
               <div className="error-message">{permissionError}</div>
             )}
@@ -396,14 +457,10 @@ const handleEdit = (index) => {
         <div className="role-middle-container">
              <div className="user-search-button">
                           <span className="search-icon">
-                            <IoSearchSharp />
+                            {/* <IoSearchSharp /> */}
+                            <FontAwesomeIcon icon={faMagnifyingGlass} style={{fontSize:"1.4rem"}}/>
                           </span>
-                          <input
-                            type="text"
-                            placeholder="Search"
-                            onChange={handleSearch}
-                            className="user-search-input"
-                          />
+                          <input type="text" placeholder="Search" onChange={handleSearch} className="user-search-input" />
                         </div>
         </div>
         <div className="table-scroll-vertical" style={{marginTop:"1rem"}}>
@@ -427,7 +484,7 @@ const handleEdit = (index) => {
                         <td style={{ cursor: "pointer" }} 
                         onClick={() => handleEdit(index)}
                         >
-                        <FaEdit />
+                        <FontAwesomeIcon icon={faPenToSquare} style={{fontSize:"1.1rem"}}/>
                         </td>
                     </tr>
                 ))}
@@ -438,6 +495,8 @@ const handleEdit = (index) => {
 
       <Footer />
     </div>
+    {/* <ToastContainer /> */}
+    {showPopUpModal && <PopUpModal text={text} onClose={()=>setShowPopUpModal(false)}/>}
   </Suspense>
   );
 };

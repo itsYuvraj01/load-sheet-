@@ -1,0 +1,59 @@
+.popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-card {
+  background: white;
+  padding: 50px 20px;
+  height: 350px;
+  width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.popup-icon img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
+}
+
+.popup-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #c07403;
+  margin-bottom: 10px;
+}
+
+.popup-message {
+  font-size: 18px;
+  color: #444;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.popup-button {
+  background-color: #ec5a04;
+  border: none;
+  color: white;
+  padding: 15px 30px;   
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.popup-button:hover {
+  background-color: #ee6e06;
+}

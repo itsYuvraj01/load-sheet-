@@ -36,12 +36,28 @@
   width: 100%;
   max-width: 350px;
   height: 70px;
+  position: relative;
+}
+
+.role-input span{
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  color: grey;
 }
 
 .role-select{
   width: 100%;
   max-width: 350px;
   height: 70px;
+  position: relative;
+}
+
+.role-select span{
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  color: grey;
 }
 
 @media screen and (max-width: 1300px) {
@@ -222,7 +238,9 @@
 
 .role-middle-container{
     display: flex;
-    align-items: flex-end;
-    padding-left: 75%;
+    justify-content: flex-end;
+    /* padding-left: 75%; */
     margin-top: 1rem;
+    /* position: relative; */
 }
+

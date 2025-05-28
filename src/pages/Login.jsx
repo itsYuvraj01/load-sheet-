@@ -4,61 +4,35 @@ import { useNavigate } from "react-router-dom";
 import { loginRequest } from "../authConfig";
 import axios from "axios";
 import Environment from "../Environment";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useGoogleLogin } from "@react-oauth/google";
-
+import Spinner from "../component/Spinner";
+// import { useGoogleLogin } from "@react-oauth/google";
+import  secureLocalStorage  from  "react-secure-storage";
 const Login = () => {
+  const [loading,setLoading] = useState(false);
   const { instance } = useMsal();                              //instance of microsoft login
   const navigate = useNavigate();                              //used to move from one page to another
   const [user, setUser] = useState("");                        //used to store login response of api after login
   const [stationCode, setStationCode] = useState("");          //used to store login response of api after login
+  const user1 = useRef();
+  const [ipAddress,setIpAddress] = useState("");
+  const fetchApi = async () => {
+    try {
+      const response = await fetch('https://api.ipify.org');
+      const data = await response.text();
+      setIpAddress(data);
+      secureLocalStorage.setItem("IP",data)
+    } catch (error) {
+      console.log("Error in fetching ip address");
+    }
+  }
 
-  // google login button functionality
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const accessToken = tokenResponse.access_token;
-        // Fetch Google user info using access token
-        const { data } = await axios.get(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        // console.log("Google login success:", data);
-        const email = data.email;
-        const response = await axios.post(
-          `${Environment.BaseAPIURL}/CheckLoginByFlightCode`,
-          {
-            userId: email,
-          }
-        );
-        if (response.data.responseMessage === "Login Success") {
-          toast.success("User logged in successfully");
-          localStorage.setItem("loginType", "google");
-          navigate("/Dashboard");
-        } else {
-          toast.error("User is not registered! Please contact administrator");
-        }
-      } catch (err) {
-        console.error("Google login error:", err);
-        toast.error("Something went wrong during Google login");
-      }
-    },
-    onError: () => {
-      console.log("Google login failed");
-      toast.error("Google login failed");
-    },
-    prompt: "select_account",
-    ux_mode: "popup",
-  });
-
+  useEffect(()=> {fetchApi()},[])
   // microsoft login functionality
   const handleLogin = async () => {
+    setLoading(true);
     try {
       localStorage.clear();
       const accounts = instance.getAllAccounts();
@@ -74,24 +48,78 @@ const Login = () => {
         prompt: "select_account",
       });
       // console.log("Full login response:", response);
+      // secureLocalStorage.setItem("accessToken", response.accessToken);
       const email = response.account?.username;
       if (!email) {
-        alert("Login failed: Email not found.");
+        toast("Login failed: Email not found.");
+        setLoading(false);
         return;
       }
       const apiResponse = await axios.post(
         `${Environment.BaseAPIURL}/CheckLoginByFlightCode`,
         {
-          userId: email,
+          UserId: email,
+          "LoginSource":"P"
         }
       );
-      // console.log("API Response:", apiResponse);
+      console.log("API Response:", apiResponse);
       if (apiResponse?.data?.responseMessage === "Login Success") {
         setUser(apiResponse?.data?.userId);
+        user1.current = apiResponse?.data?.userId;
         setStationCode(apiResponse?.data?.stationCode);
-        toast.success("User logged in successfully");
+        // toast.success("User logged in successfully");
+        secureLocalStorage.setItem("UID",apiResponse?.data?.id);
+        secureLocalStorage.setItem("userId",apiResponse?.data?.userId);
+        secureLocalStorage.setItem("isAuthenticated", "true");
+        const expiryTime = new Date().getTime() + 15*60*1000;
+        secureLocalStorage.setItem("sessionTimeOut",expiryTime);
+        secureLocalStorage.setItem("Permissions",apiResponse?.data?.details)
+        const userPermissions = apiResponse?.data?.details || [];
         localStorage.setItem("loginType", "microsoft");
-        navigate("/Dashboard");
+         if (userPermissions.some(p => p === "Dashboard")) {
+             navigate("/Dashboard");
+           } else {
+             navigate("/welcome");
+           }
+        // console.log("Obj",obj)
+        try {
+          const insertData = await axios.post(`${Environment.BaseAPIURL}/InsertAuditReport`,{
+             "IpAddress": ipAddress,
+             "Action": "Login",
+             "ProcessName": "Logged in successfully",
+             "UserId": user1.current
+          })
+          console.log("response insert in audit",insertData?.data?.response);
+          // console.log("Obj",obj)
+          setLoading(false);
+        } catch (error) {
+          console.log("error in sending data",error);
+          setLoading(false)
+        }
+      } 
+      else if(apiResponse?.data?.responseMessage === "User does not have permission to login from this source.") {
+         toast.error("Device user can not login to Portal", {
+          autoClose: 5000,
+        });
+         try {
+          const insertData = await axios.post(`${Environment.BaseAPIURL}/InsertAuditReport`,{
+             "IpAddress": ipAddress,
+             "Action": "Login",
+             "ProcessName": "Device user can not login to Portal",
+             "UserId": email
+          })
+          console.log("response insert in audit",insertData?.data?.response);
+          setLoading(false);
+        } catch (error) {
+          console.log("error in sending data",error);
+          setLoading(false);
+        }
+        const account = response.account;
+        await instance.logoutPopup({
+          postLogoutRedirectUri: "http://localhost:3000/",
+          // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
+          account,
+        });
       } else {
         toast.error("User is not registered! Please contact administrator", {
           autoClose: 5000,
@@ -102,19 +130,20 @@ const Login = () => {
           // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
           account,
         });
+        setLoading(false);
       }
     } catch (error) {
       console.error("Login failed:", error);
+      setLoading(false);
     }
   };
 
   return (
+    <>{ loading && <Spinner/>   }
     <div
       className="login-container"
       style={{
         backgroundImage: "url('/images/bg1.jpg')",
-        // backgroundImage: "url('/images/bg.jpg')",
-        // backgroundImage: "url('/images/aix.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -123,65 +152,22 @@ const Login = () => {
       <div className="animated-text">Welcome to AIX LOAD SHEET Portal</div>
       <div className="login-box">
         <div className="login-left">
-          <img
-            // src="images/leftimage.jpg"
-            src="images/AirIndiaExpress.png"
-            alt="Air India Express Logo"
-            className="login-logo"
-          />
+          <img src="images/AirIndiaExpress.png" alt="Air India Express Logo" className="login-logo" />
         </div>
         <div className="login-right">
           <div className="login-logo-image">
-            <img
-              src="/images/logoimae-removebg-preview.png"
-              alt=""
-              style={{ height: "100%", width: "100%" }}
-            />
+            <img src="images/plane.png" alt="" style={{ height: "100%", width: "100%" }} />
           </div>
           <h2>Welcome to Air India Express</h2>
-          <p>
-            To continue, please log in using your Microsoft or Google account.
-          </p>
-
+          <p> To continue, please login with your official AIX Email ID </p>
           {/* Microsoft Login Button */}
           <button className="login-button" onClick={handleLogin}>
-            <div
-              style={{
-                height: "20px",
-                width: "20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img
-                src="/images/microsoft.png"
-                alt=""
-                style={{ height: "100%", width: "100%" }}
-              />
+            <div style={{ height: "20px",width: "20px", display: "flex",alignItems: "center",justifyContent: "center",}}>
+              <img src="/images/favicon.jpg" alt="" style={{ height: "100%", width: "100%" }}/>
             </div>
-            Log in with Microsoft
+            Log in with AIX Email ID
           </button>
 
-          {/* Google Login Button */}
-          <button className="login-button" onClick={() => googleLogin()}>
-            <div
-              style={{
-                height: "20px",
-                width: "20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img
-                src="/images/google.png"
-                alt="Google"
-                style={{ height: "100%", width: "100%" }}
-              />
-            </div>
-            Log in with Google
-          </button>
         </div>
       </div>
       <ToastContainer
@@ -198,6 +184,7 @@ const Login = () => {
         transition={Bounce}
       />
     </div>
+    </>
   );
 };
 

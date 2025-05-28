@@ -1,0 +1,112 @@
+ 
+.main-vendor{
+  width: 100%;
+  padding-top: 77px;
+  padding-bottom: 1.5rem;
+  min-height: 100vh;
+}
+
+.main-vender-container{
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0 1.5rem;
+}
+
+.vendor-section-1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+
+ .vendor-input {
+    width: 322px;
+    position: relative;
+    height: 50px;
+  }
+
+ .vendor-input span{
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  color: grey;
+ }
+
+  @media screen and (max-width: 1372px) {
+   .vendor-input {
+    width: 310px;
+  }
+}
+
+@media screen and (max-width: 1320px) {
+   .vendor-input {
+    width: 290px;
+  }
+}
+
+@media screen and (max-width: 1250px) {
+   .vendor-input {
+    width: 275px;
+  }
+}
+
+.vendor-input-box{
+    width: 100%;
+    padding: 0.7rem 0.5rem 0.7rem 1.9rem; /* spacing for icon on left */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+    height: 43px;
+}
+
+.vendor-input-box:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+  }
+
+.vendor-input-box.error-border {
+  border-color: #e74c3c;
+  box-shadow: 0 0 4px rgba(231, 76, 60, 0.3);
+}
+
+  .error-msg {
+  color: #e74c3c; /* red tone */
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.vendor-select-box {
+    width: 100%;
+    padding: 0.7rem 0.5rem 0.7rem 1.9rem; /* spacing for icon on left */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.vendor-select-box:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+  }
+
+.vendor-select-box.error-border {
+  border-color: #e74c3c;
+  box-shadow: 0 0 4px rgba(231, 76, 60, 0.3);
+}
+
+.vendor-button-group{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+ 

@@ -1,0 +1,108 @@
+.Audit-report-main-container {
+  width: 100%;
+  padding-top: 77px;
+  padding-bottom: 1.9rem;
+  min-height: 100vh;
+}
+
+.Audit-report-container {
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.audit-feature-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  /* justify-content: space-between; */
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.audit-datepicker-wrapper{
+    width: 350px;
+}
+
+.start-date-dropdown .react-datepicker-wrapper {
+    display: block !important;
+    padding: 0;
+    border: 0;
+}
+
+.audit-datepicker {
+  position: relative;
+  width: 350px;
+}
+
+.Audit-date-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.calendar-icon {
+  position: absolute;
+  top: 38px;
+  left: 10px;
+  color: #888;
+  font-size: 1rem;
+  z-index: 2;
+  cursor: pointer;
+}
+
+
+.audit-datepicker-wrapper .audit-datepick {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  font-size: 1rem;
+  border: 1px solid #8f8d8d;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.audit-datepick:focus{
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+.submit-audit-form-button{
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  background: #06970d;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-audit-form-button:hover{
+  background-color: #126431;
+}
+
+.audit-functionality {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.download-excel-audit {
+    background: rgb(95, 95, 243);
+    padding: 0.525rem 1.2rem;
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    position: relative;
+    cursor: pointer;
+    padding-right: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
