@@ -105,6 +105,11 @@
   outline: none;
 }
 
+.role-text-select:focus{
+   border-color: #007bff;
+  outline: none;
+}
+
 .role-down {
   display: flex;
   gap: 1rem;

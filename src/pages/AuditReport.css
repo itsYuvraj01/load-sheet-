@@ -1,7 +1,7 @@
 .Audit-report-main-container {
   width: 100%;
   padding-top: 77px;
-  padding-bottom: 1.9rem;
+  /* padding-bottom: 1.9rem; */
   min-height: 100vh;
 }
 
@@ -21,6 +21,7 @@
 
 .audit-datepicker-wrapper{
     width: 350px;
+    /* height: 45px; */
 }
 
 .start-date-dropdown .react-datepicker-wrapper {
@@ -32,6 +33,7 @@
 .audit-datepicker {
   position: relative;
   width: 350px;
+  /* height: 45px; */
 }
 
 .Audit-date-label {
@@ -43,7 +45,7 @@
 
 .calendar-icon {
   position: absolute;
-  top: 38px;
+  top: 40px;
   left: 10px;
   color: #888;
   font-size: 1rem;
@@ -56,9 +58,10 @@
   width: 100%;
   padding: 10px 10px 10px 35px;
   font-size: 1rem;
-  border: 1px solid #8f8d8d;
+  border: 1px solid rgb(198 191 191);
   border-radius: 6px;
   cursor: pointer;
+  height: 45px;
 }
 
 .audit-datepick:focus{
@@ -70,7 +73,7 @@
 .submit-audit-form-button{
   font-size: 1.2rem;
   font-weight: bold;
-  padding: 0.6rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   border: none;
   background: #06970d;
   color: white;

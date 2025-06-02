@@ -12,6 +12,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from "axios";
 import Environment from "../Environment";
+import Spinner from "../component/Spinner";
 
 const AuditReport = () => {
   const [startDate, setStartDate] = useState(() => {
@@ -19,18 +20,15 @@ const AuditReport = () => {
     defaultDate.setHours(0, 0, 0, 0);
     return defaultDate;
   });
-  const [endDate, setEndDate] = useState(()=>{
-    const defaultDate = new Date();
-    defaultDate.setHours(0, 0, 0, 0);
-    return defaultDate;
-  })
+  const [endDate, setEndDate] = useState(() => new Date());
+
   const datePickerRef = useRef(null);
   const handleStartDateChange = (date) => setStartDate(date);
   const handleEndDateChange = (date) => setEndDate(date);
   const openCalendar = () => datePickerRef.current.setFocus(); // focus input to open calendar
   const [tableData, setTableData] = useState([]);
   const [fiterData, setFilteredData] = useState([]);
-
+  const [loading,setLoading] = useState(false);
   const [expandedRows, setExpandedRows] = useState({});
   const toggleDescription = (index) => {
     setExpandedRows((prev) => ({
@@ -45,23 +43,18 @@ const AuditReport = () => {
     return text.slice(0, 50) + " ...";
   };
 
-  useEffect(()=>{
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(`${Environment.BaseAPIURL}/GetAuditReport`,{
-          "FromDate":"",
-          "ToDate":""
-        })
-        // console.log("Audit report",response?.data);
-        const auditData = Array.isArray(response?.data) ? response?.data : [];
-        setTableData(auditData);
-        setFilteredData(auditData);
-      } catch (error) {
-        console.log("Error in fetching audit report data",error)
-      }
-    }
-    fetchData();
-  },[]);
+    const today = startDate
+      ? `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${String(startDate.getDate()).padStart(2, "0")}`
+      : "";
+      const end = endDate
+      ? `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${String(endDate.getDate()).padStart(2, "0")}`
+      : "";
 
   const handleSearch = (e) => {
     const search = e.target.value;
@@ -117,16 +110,61 @@ const AuditReport = () => {
     saveAs(blob, "Audit Report.xlsx");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = ({
-      startDate,
-      endDate
-    })
-    console.log("form data",formData);
+const formatDate = (date) => {
+  return date
+    ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+    : "";
+};
+
+useEffect(() => {
+  // Fetch today's data on mount
+  setLoading(true)
+  const fetchTodayData = async () => {
+    const formattedStart = formatDate(new Date());
+    const formattedEnd = formatDate(new Date());  
+
+    try {
+      const response = await axios.post(`${Environment.BaseAPIURL}/GetAuditReport`, {
+        fromDate: formattedStart,
+        toDate: formattedEnd,
+      });
+
+      const auditData = Array.isArray(response?.data) ? response.data : [];
+      setTableData(auditData);
+      setFilteredData(auditData);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error fetching audit report:", error);
+      setLoading(false);
+    }
+  };
+
+  fetchTodayData();
+}, []);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+  setLoading(true);
+  try {
+    const response = await axios.post(`${Environment.BaseAPIURL}/GetAuditReport`, {
+      fromDate: formattedStartDate,
+      toDate: formattedEndDate,
+    });
+    const auditData = Array.isArray(response?.data) ? response.data : [];
+    setTableData(auditData);
+    setFilteredData(auditData);
+    setLoading(false);
+  } catch (error) {
+    console.error("Error fetching audit report data:", error);
+    setLoading(false);
   }
+};
 
   return (
+    <>
+     {loading && <Spinner/>}
     <div className="Audit-report-main-container">
       <Navbar />
       <div className="Audit-report-container">
@@ -141,11 +179,11 @@ const AuditReport = () => {
                 id="start-date"
                 selected={startDate}
                 onChange={handleStartDateChange}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="dd-MM-yyyy HH:mm"
+                // showTimeSelect
+                // timeFormat="HH:mm"
+                // timeIntervals={15}
+                // timeCaption="Time"
+                // dateFormat="dd-MM-yyyy HH:mm"
                 className="audit-datepick"
                 maxDate={new Date()}
                 ref={datePickerRef}
@@ -162,11 +200,11 @@ const AuditReport = () => {
                 id="start-date"
                 selected={endDate}
                 onChange={handleEndDateChange}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="dd-MM-yyyy HH:mm"
+                // showTimeSelect
+                // timeFormat="HH:mm"
+                // timeIntervals={15}
+                // timeCaption="Time"
+                // dateFormat="dd-MM-yyyy HH:mm"
                 className="audit-datepick"
                 maxDate={new Date()}
                 ref={datePickerRef}
@@ -176,7 +214,7 @@ const AuditReport = () => {
           <button type="submit" className="submit-audit-form-button">Submit</button>
         </form>
 
-        <div className="audit-functionality">
+          <div className="audit-functionality">
             <div className="report-search-button" style={{ height: "44px" }}>
               <span className="search-icon">
                 {/* <IoSearchSharp /> */}
@@ -221,7 +259,7 @@ const AuditReport = () => {
                   <td>{index + 1}</td>
                   <td>{data.ipAddress}</td>
                   <td>{data.action}</td>
-                  <td>
+                  <td style={{textAlign:"left"}}>
                     {expandedRows[index]
                       ? data.processDescription
                       : getShortnerText(data.processDescription)}
@@ -250,6 +288,7 @@ const AuditReport = () => {
       </div>
       <Footer />
     </div>
+    </>
   );
 };
 

@@ -114,6 +114,9 @@ const Navbar = () => {
                   {hasPermission("AuditReport") && (
                   <div className="dropdown-item" onClick={() => navigate("/AuditReport")}> Audit Report </div>
                   )}
+                  {hasPermission("Load Sheet Image Report") && (
+                  <div className="dropdown-item" onClick={() => navigate("/ImageReport")}>Load Sheet Image Report</div>
+                  )}
                 </div>
               )}
             </div>

@@ -72,7 +72,7 @@ body::-webkit-scrollbar {
   border-radius: 6px;
   width: 100%;
   padding: 0.2rem 0 0.2rem 0.625rem;
-  border: 1px solid rgb(122, 120, 120);
+  border: 1px solid rgb(198 191 191);
   cursor: pointer;
   /* position: absolute; */
 }
@@ -180,7 +180,7 @@ select {
   width: 100%;
   padding: 0.5rem 0.625rem;
   font-size: 1rem;
-  border: 1px solid grey;
+  border: 1px solid rgb(198 191 191);
   border-radius: 5px;
   cursor: pointer;
   height: 30px;

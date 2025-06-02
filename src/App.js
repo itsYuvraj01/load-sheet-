@@ -11,6 +11,7 @@ import "../src/pages/Report.css";
 import "../src/pages/AuditReport.css";
 import "../src/pages/AddVendor.css";
 import "../src/pages/Welcome.css"
+import "../src/pages/ImageReport.css"
 import Spinner from './component/Spinner';
 import AutoLogout from './hooks/AutoLogout';
 const Login = lazy(()=>import ('./pages/Login'));
@@ -21,6 +22,7 @@ const AddRole = lazy(()=>import ('./pages/AddRole'));
 const AuditReport = lazy(()=> import ('./pages/AuditReport'))
 const Welcome = lazy(()=> import('./pages/Welcome'))
 const AddVendor = lazy(()=> import('./pages/AddVendor'));
+const ImageReport = lazy(()=> import('./pages/ImageReport'));
 
 function App() {
   return (
@@ -39,7 +41,8 @@ function App() {
           <Route path="/LoadSheetReport" element={<ProtectedRoutes><Report /></ProtectedRoutes>} />
           <Route path="/AuditReport" element={<ProtectedRoutes><AuditReport /></ProtectedRoutes>} />
           <Route path="/Welcome" element={<ProtectedRoutes><Welcome/></ProtectedRoutes>} />
-          <Route path="/Add-Vendor" element={<AddVendor/> }/>
+          <Route path="/Add-Vendor" element={<ProtectedRoutes><AddVendor/></ProtectedRoutes>}/>
+          <Route path="/ImageReport" element={<ImageReport/>}/>
         </Routes>
       </BrowserRouter>
     </Suspense>

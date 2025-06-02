@@ -297,7 +297,7 @@ const Report = () => {
             <form className="report-container-part-1" onSubmit={handleSubmit}>
               <div className="report-datepicker-container start-date-dropdown">
                 <label htmlFor="start-date" className="report-label">
-                  Start Date
+                  Select Date
                 </label>
                 <span className="calender">
                   {/* <FaCalendarAlt /> */}

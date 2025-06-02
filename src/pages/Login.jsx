@@ -65,7 +65,8 @@ const Login = () => {
       console.log("API Response:", apiResponse);
       if (apiResponse?.data?.responseMessage === "Login Success") {
         setUser(apiResponse?.data?.userId);
-        user1.current = apiResponse?.data?.userId;
+        // user1.current = apiResponse?.data?.userId;
+        user1.current = apiResponse?.data?.id;
         setStationCode(apiResponse?.data?.stationCode);
         // toast.success("User logged in successfully");
         secureLocalStorage.setItem("UID",apiResponse?.data?.id);
@@ -87,7 +88,9 @@ const Login = () => {
              "IpAddress": ipAddress,
              "Action": "Login",
              "ProcessName": "Logged in successfully",
-             "UserId": user1.current
+             "UserId": user1.current,
+             "CreatedBy": user1.current,
+             "TemplateId": "Login"
           })
           console.log("response insert in audit",insertData?.data?.response);
           // console.log("Obj",obj)
@@ -105,8 +108,10 @@ const Login = () => {
           const insertData = await axios.post(`${Environment.BaseAPIURL}/InsertAuditReport`,{
              "IpAddress": ipAddress,
              "Action": "Login",
-             "ProcessName": "Device user can not login to Portal",
-             "UserId": email
+             "ProcessName": "Device user login failed",
+             "UserId": user1.current,
+             "CreatedBy": user1.current,
+             "TemplateId": "Login"
           })
           console.log("response insert in audit",insertData?.data?.response);
           setLoading(false);

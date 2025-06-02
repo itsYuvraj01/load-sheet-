@@ -3,8 +3,6 @@ import "../component/Footer.css"
 import "../component/Navbar.css"
 import "./AddRole.css"; // Import CSS here
 import Switch from "react-switch";
-// import { IoSearchSharp } from "react-icons/io5";
-// import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import Environment from "../Environment";
 import Spinner from "../component/Spinner";
@@ -20,7 +18,7 @@ const AddRole = () => {
   const rolePermissions = {
     DashBoard: ["Dashboard"],
     Administration: ["Add Role", "Add User","Add Organisation"],
-    Reports: ["Load Sheet Details","AuditReport"],
+    Reports: ["Load Sheet Details","AuditReport","Load Sheet Image Report"],
     Assign_Permission_For_App: ["View & Print","Print"]
   };
 
@@ -43,6 +41,7 @@ console.log(cleaned);
   const [tableData,setTableData] = useState([]);
   const [filterData,setFilterData] = useState([]);
   const [roleError,setRoleError] = useState("");
+  // const roleError = useRef();
   const [roleData1,setRoleData1] = useState([]);
   const [status,setStatus] = useState(1)
   const [editingIndex,setEditingIndex] = useState(null)
@@ -74,11 +73,13 @@ console.log(cleaned);
   const roleChange = (e) => {
     setRoleName(e.target.value);
     setRoleError('')
+    // roleError.current = '';
     if(e.target.value !== ''){
       setEmptyFields(prev => ({...prev,roleName:false}));
     }
     if(e.target.value !=='' && checkDuplicateRole(e.target.value)){
       setRoleError("*Role already exists")
+      // roleError.current = "*Role already exists";
     }
   }
 
@@ -92,10 +93,11 @@ console.log(cleaned);
   const removeAllSpaces = (str) => {
   return str.replace(/\s+/g, '');
   };
-   // to check the duplicate email
+
+   // to check the duplicate role
   const checkDuplicateRole = (role) => {
     const roleName = removeAllSpaces(role);
-    return roleData1.some( user => String(user.roleName).toLowerCase() === roleName.toLowerCase())
+    return roleData1.some( user => String(removeAllSpaces(user.roleName)).toLowerCase() === roleName.toLowerCase())
   };
 
   // searching functionality
@@ -176,10 +178,12 @@ useEffect(() => {
   if(editingIndex === null) {
     if(checkDuplicateRole(roleName)){
       setRoleError("*Role already exist");
+      // roleError.current = "*Role already exist";
       role = true;
     }
     else {
       setRoleError("");
+      // roleError.current = '';
     }
   }
   if(role){
@@ -232,6 +236,7 @@ useEffect(() => {
       setTableData(data);
       setFilterData(data);
       setRoleData1(data);
+      const roleId = response?.data?.roleId;
       if(editingIndex!==null){
         setText("Role updated successfully");
         setShowPopUpModal(true);
@@ -240,7 +245,9 @@ useEffect(() => {
              "IpAddress": IpAddress,
              "Action": "Update Role",
              "ProcessName": "Role Updated Successfully",
-             "UserId": userId
+             "UserId": roleId,
+             "CreatedBy":Uid,
+             "TemplateId": "UpdateRole"
           })
           console.log("response insert in audit",insertData?.data?.response);
           // console.log("Obj",obj)
@@ -255,7 +262,9 @@ useEffect(() => {
              "IpAddress": IpAddress,
              "Action": "Add Role",
              "ProcessName": "Role Added Successfully",
-             "UserId": userId
+             "UserId": roleId,
+             "CreatedBy":Uid,
+             "TemplateId": "AddRole"
           })
           console.log("response insert in audit",insertData?.data?.response);
           // console.log("Obj",obj)
@@ -284,6 +293,8 @@ const handleReset = () => {
   })
   setPermissionError("")
   setEditingIndex(null);
+  setRoleError('');
+  // roleError.current = '';
 }
 
 const handleEdit = (index) => {
@@ -294,6 +305,7 @@ const handleEdit = (index) => {
   }
 
   setRoleName(editData.roleName);
+  setStatus(editData.isActive);
   setReportTo(editData.reportsToRoleName);
   setEditingIndex(index);
   setEmptyFields({

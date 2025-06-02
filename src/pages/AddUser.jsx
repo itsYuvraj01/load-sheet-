@@ -206,6 +206,8 @@ const AddUser = () => {
       orgnisation: false,
     });
     setEditingIndex(null);
+    setUserIDError('')
+    setEmailError('')
   };
 
   // to check the duplicate email
@@ -219,7 +221,7 @@ const AddUser = () => {
     const cleanedUserID = removeAllSpaces(userID); // remove all spaces
     return userData1.some(
       (user) =>
-        String(user.employeeID).toLowerCase() === cleanedUserID.toLowerCase()
+        String(removeAllSpaces(user.employeeID)).toLowerCase() === cleanedUserID.toLowerCase()
     );
   };
 
@@ -327,6 +329,7 @@ const AddUser = () => {
         }
       );
       if (response.data.success) {
+        const id = response?.data?.id;
         const updateUserTable = await axios.post(
         `${Environment.BaseAPIURL}/GetUserUpdateData`,{Action: "GetReportUser"});
         const userDataupdated = Array.isArray(updateUserTable?.data) ? updateUserTable?.data : [];
@@ -341,7 +344,9 @@ const AddUser = () => {
                "IpAddress": IpAddress,
                "Action": "Add User",
                "ProcessName": "User Added Successfully",
-               "UserId": email
+               "UserId": id,
+               "CreatedBy":Uid,
+               "TemplateId": "AddUser"
             })
             // console.log("response insert in audit",insertData?.data?.response);
             // console.log("Obj",obj)
@@ -356,7 +361,9 @@ const AddUser = () => {
                "IpAddress": IpAddress,
                "Action": "Update User",
                "ProcessName": "User Updated Successfully",
-               "UserId": email
+               "UserId": id,
+               "CreatedBy":Uid,
+               "TemplateId": "UpdateUser"
             })
             // console.log("response insert in audit",insertData?.data?.response);
             } catch (error) {
@@ -426,6 +433,20 @@ const AddUser = () => {
         }
       );
       if (response?.data?.success) {
+        const id = response?.data?.id;
+        try {
+            const insertData = await axios.post(`${Environment.BaseAPIURL}/InsertAuditReport`,{
+               "IpAddress": IpAddress,
+               "Action": "Delete User",
+               "ProcessName": "User Deleted Successfully",
+               "UserId": id,
+               "CreatedBy":Uid,
+               "TemplateId": "DeleteUser"
+            })
+            // console.log("response insert in audit",insertData?.data?.response);
+            } catch (error) {
+              console.log("error in sending data",error);
+            }
         const updateUserTable = await axios.post(
           `${Environment.BaseAPIURL}/GetUserUpdateData`,
           {
@@ -641,7 +662,7 @@ const AddUser = () => {
                       {/* <MdOutlineLocalAirport /> */}
                       <FontAwesomeIcon icon={faBuildingNgo} />
                     </span>
-                    <select value={orgnisation} onChange={handleOrgnisationChange} className={`user-input ${emptyFields.role ? "error-border" : ""}`}>
+                    <select value={orgnisation} onChange={handleOrgnisationChange} className={`user-input ${emptyFields.orgnisation ? "error-border" : ""}`}>
                       <option value="" disabled> Select Organization </option>
                       {organisationData.map((data, index) => (
                         <option key={index} value={data.orgName}>
@@ -780,7 +801,7 @@ const AddUser = () => {
                 <thead>
                   <tr>
                     <th>Sr. no</th>
-                    <th>User Id</th>
+                    <th>Employee Id</th>
                     <th>Name</th>
                     <th>Email ID</th>
                     <th>Station</th>
@@ -824,7 +845,7 @@ const AddUser = () => {
             <div className="delete-Modal-overLay">
             <div className="delete-modal-content">
             <div className="warning-image"><img src="/images/warning.png" alt="" style={{height:"100%",width:"100%"}}/></div>
-            <div className="text-para">Are you sure you want to delete the user</div>
+            <div className="text-para">Are you sure you want to delete the user?</div>
             <div className="delete-modal-buttons">
               <button className="yes-button" onClick={() => { handleDelete(selectedUserId, selectedUserIndex); setShowDeleteModal(false);
                       setText("User deleted successfully"); setShowPopUpModal(true); }}>Yes</button>
