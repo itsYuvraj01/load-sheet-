@@ -19,11 +19,12 @@ const Footer = lazy(() => import("../component/Footer"));
 const ImageReport = () => {
   const datePickerRef = useRef(null);
   const openCalendar = () => datePickerRef.current.setFocus(); // focus input to open calendar
-  const [startDate, setStartDate] = useState(() => {
-      const defaultDate = new Date();
-      defaultDate.setHours(0, 0, 0, 0);
-      return defaultDate;
-    });
+  // const [startDate, setStartDate] = useState(() => {
+  //     const defaultDate = new Date();
+  //     defaultDate.setHours(0, 0, 0, 0);
+  //     return defaultDate;
+  //   });
+  const [startDate,setStartDate] = useState(() => new Date());
   const [endDate, setEndDate] = useState(() => new Date());
   const handleStartDateChange = (date) => setStartDate(date);
   const handleEndDateChange = (date) => setEndDate(date);
@@ -50,7 +51,7 @@ useEffect(()=>{
         "fromDate":start,
         "toDate":end
       });
-      console.log("image report",response?.data)
+      // console.log("image report",response?.data)
       const imageReport = Array.isArray(response?.data) ? response?.data : [];
       setTableData(imageReport);
       setFilterData(imageReport);
@@ -72,8 +73,8 @@ useEffect(()=>{
     setLoading(true);
     try {
       const response = await axios.post(`${Environment.BaseAPIURL}/GetImageReport`,{
-        "fromDate":startDate,
-        "toDate":endDate
+        "fromDate":formatDate(startDate),
+        "toDate":formatDate(endDate)
       });
       const imageReport = Array.isArray(response?.data) ? response?.data : [];
       setTableData(imageReport);
@@ -83,7 +84,7 @@ useEffect(()=>{
       console.log("Can not fetch image report",error);
       setLoading(false);
     }
-    console.log("form data", formData);
+    // console.log("form data", formData);
   };
 
  const detectMimeType = (base64) => {
@@ -104,21 +105,51 @@ const downloadBase64File = (base64Data, filename) => {
   document.body.removeChild(link);
 };
 
-const handleSearch = () => {
-  
+const handleSearch = (e) => {
+  const search = e.target.value;
+  if(search !== ''){
+    filterForTable(search);
+  }
+  else{
+    setTableData(filterData);
+  }
+};
+
+const filterForTable = (search) => {
+  const filtered = filterData.filter((data)=> Object.values(data).some((value)=>String(value).toLowerCase().includes(search.toLowerCase())));
+  setTableData(filtered);
 }
+
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  
+  const formattedDate = date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
+  const formattedTime = date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true, // change to false for 24-hour format
+  });
+
+  return `${formattedDate} ${formattedTime}`;
+};
 
 const excelDownload = () => {
     const excelData = tableData.slice();
     const excel = excelData.map((item, index) => ({
       "Sr. no.": index + 1,
-      "Departure Date": item.flightDate,
+      "Departure Date": formatTimestamp(item.flightDate),
       "Flight No": item.flightNo,
       "Origin": item.fromAirport,
       "Destination": item.toAirport,
       "Load Sheet Name": item.loadsheetname,
-      "Load Sheet Print Date/Time": item.printDateTime,
-      "Load Sheet Upload Date/Time": item.createdDateTime,
+      "Load Sheet Print Date/Time": formatTimestamp(item.printDateTime),
+      "Load Sheet Upload Date/Time": formatTimestamp(item.createdDateTime),
       "User Id": item.userId,
     }));
 
@@ -262,50 +293,35 @@ const excelDownload = () => {
                 return (
                   <tr key={index}>
                     <td>{showSrNo ? serialNo : ""}</td>
-                    <td>{flight.flightDate}</td>
+                    <td>{formatTimestamp(flight.flightDate)}</td>
                     <td>{flight.flightNo}</td>
                     <td>{flight.fromAirport}</td>
                     <td>{flight.toAirport}</td>
                     {/* <td>{flight.std}</td> */}
                     <td>{flight.loadsheetname}</td>
-                    <td>{flight.printDateTime}</td>
-                    <td>{flight.createdDateTime}</td>
+                    <td>{formatTimestamp(flight.printDateTime)}</td>
+                    <td>{formatTimestamp(flight.createdDateTime)}</td>
                     <td>{flight.userId}</td>
                     <td>
                       <FontAwesomeIcon
                         icon={faEye}
+                        title="View"
                         style={{ marginRight: "1rem", cursor: "pointer" }}
                         onClick={() => {
                           const mimeType = detectMimeType(flight.imageFile);
                           const dataUrl = `data:${mimeType};base64,${flight.imageFile}`;
                           setImageModal(dataUrl);
-                        }}
-                      />
-                      {/* <ImageDownloader
-                        style={{
-                          border: "none",
-                          background: "none",
-                          cursor: "pointer",
-                        }}
-                        imageUrl="https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                        imageTitle="Beautiful Image"
-                      > */}
+                        }}/>
                         <FontAwesomeIcon
                           icon={faDownload}
+                          title="download"
                           onClick={() => downloadBase64File(flight.imageFile, `image-Load shhet.jpg`)} 
                           style={{
                             color: "#333",
                             fontSize: "18px",
                             transition: "0.3s",
                             cursor:"pointer"
-                          }}
-                          onMouseOver={(e) =>
-                            (e.target.style.color = "#007bff")
-                          }
-                          onMouseOut={(e) => (e.target.style.color = "#333")}
-                        />
-                      {/* </ImageDownloader> */}
-                    </td>
+                          }}/></td>
                   </tr>
                 );
               })}

@@ -12,6 +12,7 @@ import "../src/pages/AuditReport.css";
 import "../src/pages/AddVendor.css";
 import "../src/pages/Welcome.css"
 import "../src/pages/ImageReport.css"
+import "../src/pages/DeviceRegistration.css"
 import Spinner from './component/Spinner';
 import AutoLogout from './hooks/AutoLogout';
 const Login = lazy(()=>import ('./pages/Login'));
@@ -23,6 +24,7 @@ const AuditReport = lazy(()=> import ('./pages/AuditReport'))
 const Welcome = lazy(()=> import('./pages/Welcome'))
 const AddVendor = lazy(()=> import('./pages/AddVendor'));
 const ImageReport = lazy(()=> import('./pages/ImageReport'));
+const DeviceRegistration = lazy(()=> import('./pages/DeviceRegistration'))
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/Dashboard" element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>} />
+          <Route path="/Add-Device" element={<DeviceRegistration/>}/>
           {/* <Route path="/Add-User" element={<AddUser />} /> */}
           <Route path="/Add-User" element={<ProtectedRoutes><AddUser /></ProtectedRoutes>} />
           {/* <Route path="/Add-Role" element={<AddRole />} /> */}
@@ -41,8 +44,8 @@ function App() {
           <Route path="/LoadSheetReport" element={<ProtectedRoutes><Report /></ProtectedRoutes>} />
           <Route path="/AuditReport" element={<ProtectedRoutes><AuditReport /></ProtectedRoutes>} />
           <Route path="/Welcome" element={<ProtectedRoutes><Welcome/></ProtectedRoutes>} />
-          <Route path="/Add-Vendor" element={<ProtectedRoutes><AddVendor/></ProtectedRoutes>}/>
-          <Route path="/ImageReport" element={<ImageReport/>}/>
+          <Route path="/Add-Vendor" element={<ProtectedRoutes><AddVendor/></ProtectedRoutes>} />
+          <Route path="/ImageReport" element={<ProtectedRoutes><ImageReport/></ProtectedRoutes>} />
         </Routes>
       </BrowserRouter>
     </Suspense>

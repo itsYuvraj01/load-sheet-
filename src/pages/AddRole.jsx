@@ -17,7 +17,7 @@ const AddRole = () => {
   const IpAddress = secureLocalStorage.getItem("IP")
   const rolePermissions = {
     DashBoard: ["Dashboard"],
-    Administration: ["Add Role", "Add User","Add Organisation"],
+    Administration: ["Add Role", "Add User","Add Organisation","Add Device & Printer"],
     Reports: ["Load Sheet Details","AuditReport","Load Sheet Image Report"],
     Assign_Permission_For_App: ["View & Print","Print"]
   };

@@ -3,12 +3,6 @@ import PopUpModal from "../component/PopUpModal";
 import "../component/Footer.css";
 import "../component/Navbar.css";
 import "./AddUser.css";
-// import { FaUser } from "react-icons/fa";
-// import {MdMarkEmailUnread,MdSettingsApplications,MdDeleteForever,} from "react-icons/md";
-// import { MdOutlineLocalAirport } from "react-icons/md";
-// import { IoCloudUploadSharp, IoSearchSharp } from "react-icons/io5";
-// import { GrUserWorker } from "react-icons/gr";/
-// import { FaEdit } from "react-icons/fa";
 import Switch from "react-switch";
 import axios from "axios";
 import Environment from "../Environment";
@@ -828,11 +822,8 @@ const AddUser = () => {
                       </td>
                       <td>
                         <FontAwesomeIcon icon={faPenToSquare} style={{ cursor: "pointer", marginRight: "10px",fontSize: "1.1rem" }} onClick={() => handleEdit(index)}/>
-                        {/* <FaEdit  /> */}
-                        {/* <MdDeleteForever style={{ cursor: "pointer", fontSize: "1.1rem" }}
-                          onClick={() => {setSelectedUserId(data.userId); setSelectedUserIndex(index); setShowDeleteModal(true)}}/> */}
-                          <FontAwesomeIcon icon={faTrash} style={{ cursor: "pointer", fontSize: "1.1rem" }}
-                          onClick={() => {setSelectedUserId(data.userId); setSelectedUserIndex(index); setShowDeleteModal(true)}}/>
+                        <FontAwesomeIcon icon={faTrash} style={{ cursor: "pointer", fontSize: "1.1rem" }}
+                        onClick={() => {setSelectedUserId(data.userId); setSelectedUserIndex(index); setShowDeleteModal(true)}}/>
                       </td>
                     </tr>
                   ))}

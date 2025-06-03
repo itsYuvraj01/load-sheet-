@@ -23,7 +23,10 @@ const Login = () => {
       const response = await fetch('https://api.ipify.org');
       const data = await response.text();
       setIpAddress(data);
-      secureLocalStorage.setItem("IP",data)
+      console.log(data)
+      // secureLocalStorage.setItem("IP",data)
+      // localStorage.setItem("IP",data)
+      // secureLocalStorage.setItem("IPs",'data')
     } catch (error) {
       console.log("Error in fetching ip address");
     }
@@ -34,12 +37,12 @@ const Login = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      localStorage.clear();
+      // localStorage.clear();
       const accounts = instance.getAllAccounts();
       for (const account of accounts) {
         await instance.logoutPopup({
-          postLogoutRedirectUri: "http://localhost:3000/",
-          // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
+          // postLogoutRedirectUri: "http://localhost:3000/",
+          postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
           account,
         });
       }
@@ -70,6 +73,7 @@ const Login = () => {
         setStationCode(apiResponse?.data?.stationCode);
         // toast.success("User logged in successfully");
         secureLocalStorage.setItem("UID",apiResponse?.data?.id);
+        secureLocalStorage.setItem("IP",ipAddress)
         secureLocalStorage.setItem("userId",apiResponse?.data?.userId);
         secureLocalStorage.setItem("isAuthenticated", "true");
         const expiryTime = new Date().getTime() + 15*60*1000;
@@ -121,8 +125,8 @@ const Login = () => {
         }
         const account = response.account;
         await instance.logoutPopup({
-          postLogoutRedirectUri: "http://localhost:3000/",
-          // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
+          // postLogoutRedirectUri: "http://localhost:3000/",
+          postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
           account,
         });
       } else {
@@ -131,8 +135,8 @@ const Login = () => {
         });
         const account = response.account;
         await instance.logoutPopup({
-          postLogoutRedirectUri: "http://localhost:3000/",
-          // postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
+          // postLogoutRedirectUri: "http://localhost:3000/",
+          postLogoutRedirectUri: "https://maxdemo.maxworth.in/",
           account,
         });
         setLoading(false);

@@ -98,12 +98,15 @@ const Navbar = () => {
                   {hasPermission("Add Organisation") && (
                   <div className="dropdown-item" onClick={() => navigate("/Add-Vendor")}> Add Organisation </div>
                   )}
+                  {hasPermission("Add Device & Printer") && (
+                  <div className="dropdown-item" onClick={() => navigate("/Add-Device")}> Add Device & Printer </div>
+                  )}
                 </div>
               )}
             </div>
           )}
 
-          {hasAnyPermission(["Load Sheet Details", "AuditReport"]) && (
+          {hasAnyPermission(["Load Sheet Details", "AuditReport","Load Sheet Image Report"]) && (
             <div className="page-link-2" onClick={handleReportClick} ref={reportRef}>
               <span>Reports ▾</span>
               {openReport && (

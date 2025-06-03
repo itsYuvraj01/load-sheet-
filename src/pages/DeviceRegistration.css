@@ -1,0 +1,84 @@
+.Device-container{
+  margin-top: 80px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Device-container-upper-part{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.Device-container-upper-part-A{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.device-boxes {
+    width: 322px;
+    position: relative;
+    height: 50px;
+  }
+
+  @media screen and (max-width: 1372px) {
+   .device-boxes {
+    width: 310px;
+  }
+}
+
+@media screen and (max-width: 1320px) {
+   .device-boxes {
+    width: 290px;
+  }
+}
+
+@media screen and (max-width: 1250px) {
+   .device-boxes {
+    width: 275px;
+  }
+}
+  
+.device-input {
+    width: 100%;
+    padding: 0.7rem 0.5rem 0.7rem 1.9rem; /* spacing for icon on left */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+  }
+  
+.device-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+  }
+  
+.device-boxes select {
+    height: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+  }
+
+  select {
+    height: 41px !important;
+}
+  
+  .device-boxes span {
+    position: absolute;
+    top: 21px;
+    left: 8px;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 1.2rem;
+  }
+    
+    
